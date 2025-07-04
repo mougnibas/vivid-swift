@@ -8,9 +8,11 @@
 import Foundation
 import VividCommon
 
+/// Connector based implementation of kernel service.
 public class KernelServiceConnector: IKernelService {
 
     func createNewCustomer() -> Customer {
-        return Customer("", "")
+        // TODO Write a valid implementation.
+        return Customer("my-id", "my-name")
     }
 }

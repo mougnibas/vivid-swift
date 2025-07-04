@@ -7,6 +7,7 @@
 
 import Foundation
 import Testing
+import VividCommon
 @testable import VividKernelContract
 
 /// Unit tests of ``KernelServiceConnector`` class.
@@ -20,5 +21,19 @@ struct KernelServiceConnectorUnitTests {
         #expect(throws: Never.self) {
             KernelServiceConnector()
         }
+    }
+
+    @Test("Calling 'createNewCustomer' should return this customer")
+    func createNewCustomerShouldReturnThisCustomer() throws {
+
+        // Arrange.
+        let service: IKernelService = KernelServiceConnector()
+        let expected: Customer = Customer("my-id", "my-name")
+
+        // Act.
+        let actual: Customer = service.createNewCustomer()
+
+        // Assert.
+        #expect(actual == expected)
     }
 }

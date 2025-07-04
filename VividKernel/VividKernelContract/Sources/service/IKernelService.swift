@@ -8,7 +8,11 @@
 import Foundation
 import VividCommon
 
+/// Definition of Kernel service.
 protocol IKernelService {
 
+    /// Create, then return a new customer.
+    ///
+    /// - Returns: A newly created customer.
     func createNewCustomer() -> Customer
 }
