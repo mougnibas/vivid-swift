@@ -7,12 +7,13 @@
 
 import Foundation
 import VividCommon
+import VividKernelContract
 
-/// Definition of Kernel service.
-public protocol IKernelService {
+/// Connector based implementation of kernel service.
+public class KernelServiceImpl: IKernelService {
 
-    /// Create, then return a new customer.
-    ///
-    /// - Returns: A newly created customer.
-    func createNewCustomer() -> Customer
+    public func createNewCustomer() -> Customer {
+        // TODO Write a valid implementation.
+        return Customer("my-id", "my-name")
+    }
 }

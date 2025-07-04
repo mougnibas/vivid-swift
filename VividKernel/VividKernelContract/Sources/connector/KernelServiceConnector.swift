@@ -11,7 +11,7 @@ import VividCommon
 /// Connector based implementation of kernel service.
 public class KernelServiceConnector: IKernelService {
 
-    func createNewCustomer() -> Customer {
+    public func createNewCustomer() -> Customer {
         // TODO Write a valid implementation.
         return Customer("my-id", "my-name")
     }
