@@ -10,9 +10,8 @@ TODO
 
 Please install latest Swift release (6.1.2) using [https://www.swift.org/install](Swiftly) toolchain.
 
-Older 6.1.0 version [https://github.com/realm/SwiftLint/issues/6042](has issue) with SwiftLint.
-
-Also set Xcode to use this toolchain (```Xcode / Toolchains / Swift x.y.z release```).
+Older 6.1.0 version [https://github.com/realm/SwiftLint/issues/6042](has issue) with SwiftLint when 
+using ```swift``` cli.
 
 ## Xcode
 

@@ -6,8 +6,4 @@
 // of this license document, but changing it is not allowed.
 
 public class KernelServiceConnector: IKernelService {
-
-    func stuff() -> String {
-        return "Hello, World!"
-    }
 }
