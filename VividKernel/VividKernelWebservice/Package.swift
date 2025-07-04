@@ -17,6 +17,7 @@ let package = Package(
     dependencies: [
 
         // Public dependencies.
+        .package(url: "https://github.com/SimplyDanny/SwiftLintPlugins", exact: "0.59.1"),
         .package(url: "https://github.com/vapor/vapor.git", exact: "4.115.0"),
         .package(url: "https://github.com/apple/swift-nio.git", exact: "2.84.0"),
 
@@ -36,8 +37,12 @@ let package = Package(
                 .product(name: "Vapor", package: "vapor"),
                 .product(name: "NIOCore", package: "swift-nio"),
                 .product(name: "NIOPosix", package: "swift-nio"),
+                "VividCommon",
+                "VividKernelContract",
+                "VividKernelImpl"
             ],
-            swiftSettings: swiftSettings
+            swiftSettings: swiftSettings,
+            plugins: [.plugin(name: "SwiftLintBuildToolPlugin", package: "SwiftLintPlugins")],
         ),
 
         // Test target

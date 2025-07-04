@@ -12,6 +12,8 @@ import VividKernelContract
 /// Connector based implementation of kernel service.
 public class KernelServiceImpl: IKernelService {
 
+    public init () {}
+
     public func createNewCustomer() -> Customer {
         // TODO Write a valid implementation.
         return Customer("my-id", "my-name")
