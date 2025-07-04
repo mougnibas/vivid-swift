@@ -23,7 +23,12 @@ let package = Package(
 
     // This package declare this dependencies (package level).
     dependencies: [
-        .package(url: "https://github.com/SimplyDanny/SwiftLintPlugins", exact: "0.59.1")
+
+        // Public dependencies.
+        .package(url: "https://github.com/SimplyDanny/SwiftLintPlugins", exact: "0.59.1"),
+
+        // Private dependencies.
+        .package(path: "../../VividCommon"),
     ],
 
     // We have the followin targets.
@@ -33,6 +38,7 @@ let package = Package(
         // SwiftLint is used as plugin when the project is build.
         .target(
             name: "VividKernelContract",
+            dependencies: ["VividCommon"],
             plugins: [.plugin(name: "SwiftLintBuildToolPlugin", package: "SwiftLintPlugins")]
         ),
 
