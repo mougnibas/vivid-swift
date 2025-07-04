@@ -18,7 +18,14 @@ struct ServiceController: RouteCollection {
     let service: any IKernelService = KernelServiceImpl()
 
     func boot(routes: any RoutesBuilder) throws {
+
+        // Route POST "/customer" : Create a new customer, then return it.
+
+        // Route GET "/customer" : Return all customers.
         routes.get("customer", use: get)
+
+        // TODO
+        // Route GET "/customer/{id}" : Return the given customer, if any (404 otherwise).
     }
 
     func get(req: Request) async throws -> String {
