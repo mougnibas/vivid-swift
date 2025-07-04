@@ -15,4 +15,17 @@ public protocol IKernelService {
     ///
     /// - Returns: A newly created customer.
     func createNewCustomer() -> Customer
+
+    /// Get a customer, by id, (if any).
+    ///
+    /// - Parameters:
+    ///  - id: Identifier of a customer
+    ///
+    /// - Returns The customer if identifier exist, nil otherwise.
+    func getCustomer(_ id: String) -> Customer?
+
+    /// Get all customers.
+    ///
+    /// - Returns : All customers.
+    func getCustomers() -> [Customer]
 }

@@ -28,12 +28,71 @@ struct KernelServiceConnectorUnitTests {
 
         // Arrange.
         let service: IKernelService = KernelServiceConnector()
-        let expected: Customer = Customer("my-id", "my-name")
+        let expected: Customer = Customer("my-new-id", "my-new-name")
 
         // Act.
         let actual: Customer = service.createNewCustomer()
 
         // Assert.
+        #expect(actual == expected)
+    }
+
+    @Test("get customer by id with 'my-id' should return this customer")
+    func getCustomerByIdWithIdOneShouldReturnThisCustomer() throws {
+
+        // Arrange.
+        let service: IKernelService = KernelServiceConnector()
+        let expected: Customer = Customer("my-id", "my-name")
+
+        // Act.
+        let actual: Customer? = service.getCustomer("my-id")
+
+        // Assert
+        #expect(actual == expected)
+    }
+
+    @Test("get customer by id with 'my-id-2' should return this customer")
+    func getCustomerByIdWithIdTwoShouldReturnThisCustomer() throws {
+
+        // Arrange.
+        let service: IKernelService = KernelServiceConnector()
+        let expected: Customer = Customer("my-id-2", "my-name-2")
+
+        // Act.
+        let actual: Customer? = service.getCustomer("my-id-2")
+
+        // Assert
+        #expect(actual == expected)
+    }
+
+    @Test("get customer by id with 'my-id-3' should return nil")
+    func getCustomerByIdWithIdThreeShouldReturnNil() throws {
+
+        // Arrange.
+        let service: IKernelService = KernelServiceConnector()
+        let expected: Customer? = nil
+
+        // Act.
+        let actual: Customer? = service.getCustomer("my-id-3")
+
+        // Assert
+        #expect(actual == expected)
+    }
+
+    @Test("get all customers should return all customers")
+    func getCustomersShouldReturnThisCustomers() throws {
+
+        // Arrange.
+        let service: IKernelService = KernelServiceConnector()
+        let expected: [Customer] = [
+            Customer("my-id", "my-name"),
+            Customer("my-id-2", "my-name-2")
+        ]
+
+        // Act.
+        let actual: [Customer] = service.getCustomers()
+
+        // Assert
         #expect(actual == expected)
     }
 }
