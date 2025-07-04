@@ -13,4 +13,8 @@
    <FileRef
       location = "group:VividCommon">
    </FileRef>
+   <FileSystemSynchronizedGroup
+      location = "group:VividKernel"
+      name = "VividKernel">
+   </FileSystemSynchronizedGroup>
 </Workspace>
