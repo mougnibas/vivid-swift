@@ -13,6 +13,12 @@ Please install latest Swift release (6.1.2) using [https://www.swift.org/install
 Older 6.1.0 version [https://github.com/realm/SwiftLint/issues/6042](has issue) with SwiftLint when 
 using ```swift``` cli.
 
+Also install vapor using brew :
+
+```brew install vapor```
+
+Documentation about vapor : https://www.swift.org/getting-started/vapor-web-server/
+
 ## Xcode
 
 Open `Vivid.xcworspace```.

@@ -10,7 +10,7 @@ let package = Package(
     // Can run only on this platform.
     // This "requirement" is actually only for SwiftLint.
     platforms: [
-        .macOS(.v12)
+        .macOS(.v15)
     ],
 
     // This is a library package.
@@ -31,7 +31,7 @@ let package = Package(
         .package(path: "../../VividCommon"),
     ],
 
-    // We have the followin targets.
+    // We have the following targets.
     targets: [
 
         // Main target.

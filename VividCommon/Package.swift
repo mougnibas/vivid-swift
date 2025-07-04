@@ -10,7 +10,7 @@ let package = Package(
     // Can run only on this platform.
     // This "requirement" is actually only for SwiftLint.
     platforms: [
-        .macOS(.v12)
+        .macOS(.v15)
     ],
 
     // This is a library package.
@@ -26,7 +26,7 @@ let package = Package(
         .package(url: "https://github.com/SimplyDanny/SwiftLintPlugins", exact: "0.59.1")
     ],
 
-    // We have the followin targets.
+    // We have the following targets.
     targets: [
 
         // Main target, without any dependencies.
