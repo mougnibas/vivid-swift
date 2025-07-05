@@ -9,7 +9,7 @@ import Foundation
 import VividCommon
 
 /// Connector based implementation of kernel service.
-public class KernelServiceConnector: IKernelService {
+public final class KernelServiceConnector: IKernelService {
 
     let customer1: Customer = Customer("my-id", "my-secret")
     let customer2: Customer = Customer("my-id-2", "my-secret-2")

@@ -15,8 +15,7 @@ import VividKernelImpl
 struct KernelServiceCustomerController: RouteCollection, Sendable {
 
     // Service to use.
-    // TODO Bad practice, use inversion of control pattern instead.
-    let service: KernelServiceImpl = KernelServiceImpl()
+    let service: IKernelService
 
     func boot(routes: any RoutesBuilder) throws {
 

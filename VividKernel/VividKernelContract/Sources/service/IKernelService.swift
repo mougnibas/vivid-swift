@@ -9,7 +9,7 @@ import Foundation
 import VividCommon
 
 /// Definition of Kernel service.
-public protocol IKernelService {
+public protocol IKernelService: Sendable {
 
     /// Create, then return a new customer.
     ///

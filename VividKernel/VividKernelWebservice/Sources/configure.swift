@@ -7,12 +7,17 @@
 
 import Foundation
 import Vapor
+import VividKernelContract
+import VividKernelImpl
 
 // configures your application
 public func configure(_ app: Application) async throws {
 
+    // My services
+    let kernelService: any IKernelService = KernelServiceImpl()
+
     // Register my controller.
-    try app.register(collection: KernelServiceCustomerController())
+    try app.register(collection: KernelServiceCustomerController(service: kernelService))
 
     // register routes.
     try routes(app)
