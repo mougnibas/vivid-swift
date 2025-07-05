@@ -23,17 +23,12 @@ struct VividKernelWebserviceTests {
         // Act.
         try await withApp(configure: configure) { app in
 
-            try await app.testing().test(.POST, "customer", afterResponse: { res async in
+            try await app.testing().test(.POST, "customer", afterResponse: { res async throws in
 
                 let actualStatus: HTTPResponseStatus = res.status
-                var actualContent: CustomerDTO?
-                do {
-                    let json: String = res.body.string
-                    let jsonData: Data? = json.data(using: .utf8)
-                    actualContent = try JSONDecoder().decode(CustomerDTO.self, from: jsonData!)
-                } catch {
-                    actualContent = nil
-                }
+                let json: String = res.body.string
+                let jsonData: Data? = json.data(using: .utf8)
+                let actualContent: CustomerDTO? = try JSONDecoder().decode(CustomerDTO.self, from: jsonData!)
 
                 // Assert.
                 #expect(actualStatus == expectedStatus)
@@ -71,17 +66,12 @@ struct VividKernelWebserviceTests {
         // Act.
         try await withApp(configure: configure) { app in
 
-            try await app.testing().test(.GET, "customer/my-id", afterResponse: { res async in
+            try await app.testing().test(.GET, "customer/my-id", afterResponse: { res async throws in
 
                 let actualStatus: HTTPResponseStatus = res.status
-                var actualContent: CustomerDTO?
-                do {
-                    let json: String = res.body.string
-                    let jsonData: Data? = json.data(using: .utf8)
-                    actualContent = try JSONDecoder().decode(CustomerDTO.self, from: jsonData!)
-                } catch {
-                    actualContent = nil
-                }
+                let json: String = res.body.string
+                let jsonData: Data? = json.data(using: .utf8)
+                let actualContent: CustomerDTO? = try JSONDecoder().decode(CustomerDTO.self, from: jsonData!)
 
                 // Assert.
                 #expect(actualStatus == expectedStatus)
@@ -100,17 +90,12 @@ struct VividKernelWebserviceTests {
         // Act.
         try await withApp(configure: configure) { app in
 
-            try await app.testing().test(.GET, "customer/my-id-2", afterResponse: { res async in
+            try await app.testing().test(.GET, "customer/my-id-2", afterResponse: { res async throws in
 
                 let actualStatus: HTTPResponseStatus = res.status
-                var actualContent: CustomerDTO?
-                do {
-                    let json: String = res.body.string
-                    let jsonData: Data? = json.data(using: .utf8)
-                    actualContent = try JSONDecoder().decode(CustomerDTO.self, from: jsonData!)
-                } catch {
-                    actualContent = nil
-                }
+                let json: String = res.body.string
+                let jsonData: Data? = json.data(using: .utf8)
+                let actualContent: CustomerDTO? = try JSONDecoder().decode(CustomerDTO.self, from: jsonData!)
 
                 // Assert.
                 #expect(actualStatus == expectedStatus)
@@ -131,17 +116,12 @@ struct VividKernelWebserviceTests {
 
         // Act.
         try await withApp(configure: configure) { app in
-            try await app.testing().test(.GET, "customer", afterResponse: { res async in
+            try await app.testing().test(.GET, "customer", afterResponse: { res async throws in
 
                 let actualStatus: HTTPResponseStatus = res.status
-                var actualContent: [CustomerDTO]? = []
-                do {
-                    let json: String = res.body.string
-                    let jsonData: Data? = json.data(using: .utf8)
-                    actualContent = try JSONDecoder().decode([CustomerDTO].self, from: jsonData!)
-                } catch {
-                    actualContent = nil
-                }
+                let json: String = res.body.string
+                let jsonData: Data? = json.data(using: .utf8)
+                let actualContent: [CustomerDTO]? = try JSONDecoder().decode([CustomerDTO].self, from: jsonData!)
 
                 // Assert.
                 #expect(actualStatus == expectedStatus)
