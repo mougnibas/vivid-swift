@@ -1,11 +1,14 @@
+// GNU AFFERO GENERAL PUBLIC LICENSE
+// Version 3, 19 November 2007
+//
+// Copyright (C) 2007 Free Software Foundation, Inc. <https://fsf.org/>
+// Everyone is permitted to copy and distribute verbatim copies
+// of this license document, but changing it is not allowed.
+
 import Vapor
 
 func routes(_ app: Application) throws {
-    app.get { req async in
-        "It works!"
-    }
 
-    app.get("hello") { req async -> String in
-        "Hello, world!"
-    }
+    // All my routes are mapped by custom controllers.
+    // There is no needs to map other routes here.
 }

@@ -11,12 +11,12 @@ import VividCommon
 /// Connector based implementation of kernel service.
 public class KernelServiceConnector: IKernelService {
 
-    let customer1: Customer = Customer("my-id", "my-name")
-    let customer2: Customer = Customer("my-id-2", "my-name-2")
+    let customer1: Customer = Customer("my-id", "my-secret")
+    let customer2: Customer = Customer("my-id-2", "my-secret-2")
 
     public func createNewCustomer() -> Customer {
         // TODO Write a valid implementation.
-        return Customer("my-new-id", "my-new-name")
+        return Customer("my-new-id", "my-new-secret")
     }
 
     public func getCustomer( _ id: String) -> Customer? {

@@ -28,7 +28,7 @@ struct KernelServiceConnectorUnitTests {
 
         // Arrange.
         let service: IKernelService = KernelServiceConnector()
-        let expected: Customer = Customer("my-new-id", "my-new-name")
+        let expected: Customer = Customer("my-new-id", "my-new-secret")
 
         // Act.
         let actual: Customer = service.createNewCustomer()
@@ -42,7 +42,7 @@ struct KernelServiceConnectorUnitTests {
 
         // Arrange.
         let service: IKernelService = KernelServiceConnector()
-        let expected: Customer = Customer("my-id", "my-name")
+        let expected: Customer = Customer("my-id", "my-secret")
 
         // Act.
         let actual: Customer? = service.getCustomer("my-id")
@@ -56,7 +56,7 @@ struct KernelServiceConnectorUnitTests {
 
         // Arrange.
         let service: IKernelService = KernelServiceConnector()
-        let expected: Customer = Customer("my-id-2", "my-name-2")
+        let expected: Customer = Customer("my-id-2", "my-secret-2")
 
         // Act.
         let actual: Customer? = service.getCustomer("my-id-2")
@@ -85,8 +85,8 @@ struct KernelServiceConnectorUnitTests {
         // Arrange.
         let service: IKernelService = KernelServiceConnector()
         let expected: [Customer] = [
-            Customer("my-id", "my-name"),
-            Customer("my-id-2", "my-name-2")
+            Customer("my-id", "my-secret"),
+            Customer("my-id-2", "my-secret-2")
         ]
 
         // Act.
