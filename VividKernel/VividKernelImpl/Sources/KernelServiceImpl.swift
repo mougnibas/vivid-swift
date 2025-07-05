@@ -10,7 +10,7 @@ import VividCommon
 import VividKernelContract
 
 /// Connector based implementation of kernel service.
-public class KernelServiceImpl: IKernelService {
+public final class KernelServiceImpl: IKernelService, Sendable {
 
     let customer1: Customer = Customer("my-id", "my-secret")
     let customer2: Customer = Customer("my-id-2", "my-secret-2")

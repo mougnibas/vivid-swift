@@ -12,11 +12,11 @@ import VividKernelContract
 import VividKernelImpl
 
 /// Kernel service about customers as a Vapor Controller.
-struct KernelServiceCustomerController: RouteCollection {
+struct KernelServiceCustomerController: RouteCollection, Sendable {
 
     // Service to use.
     // TODO Bad practice, use inversion of control pattern instead.
-    let service: any IKernelService = KernelServiceImpl()
+    let service: KernelServiceImpl = KernelServiceImpl()
 
     func boot(routes: any RoutesBuilder) throws {
 
