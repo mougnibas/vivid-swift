@@ -11,8 +11,8 @@ import VividCommon
 import VividKernelContract
 import VividKernelImpl
 
-/// Kernel service as a Vapor Controller.
-struct ServiceController: RouteCollection {
+/// Kernel service about customers as a Vapor Controller.
+struct KernelServiceCustomerController: RouteCollection {
 
     /// Service to use.
     // TODO Bad practice, use inversion of control pattern instead.
@@ -30,19 +30,19 @@ struct ServiceController: RouteCollection {
         routes.get("customer", use: getAllCustomers)
     }
 
-    func postCustomer(req: Request) async throws -> CustomerContent {
+    func postCustomer(req: Request) async throws -> CustomerDTO {
 
         // Create the customer
         let newCustomer: Customer = service.createNewCustomer()
 
         // Put the customer in Vapor Model.
-        let customerContent: CustomerContent = CustomerContent(id: newCustomer.id, secret: newCustomer.secret)
+        let customerDTO: CustomerDTO = CustomerDTO(id: newCustomer.id, secret: newCustomer.secret)
 
         // Return the customer (Vapor Model).
-        return customerContent
+        return customerDTO
     }
 
-    func getCustomer(req: Request) async throws -> CustomerContent {
+    func getCustomer(req: Request) async throws -> CustomerDTO {
 
         // Get the customer ID from paramters.
         let customerId: String = req.parameters.get("id")!
@@ -56,24 +56,24 @@ struct ServiceController: RouteCollection {
         }
 
         // Put the customer in Vapor Model.
-        let customerContent: CustomerContent = CustomerContent(id: customer!.id, secret: customer!.secret)
+        let customerDTO: CustomerDTO = CustomerDTO(id: customer!.id, secret: customer!.secret)
 
         // Return the customer (Vapor Model).
-        return customerContent
+        return customerDTO
     }
 
-    func getAllCustomers(req: Request) async throws -> [CustomerContent] {
+    func getAllCustomers(req: Request) async throws -> [CustomerDTO] {
 
         // Get all customers.
         let customers: [Customer] = service.getCustomers()
 
         // Put the customers in Vapor Model.
-        var customerContents: [CustomerContent] = []
+        var customerDTOs: [CustomerDTO] = []
         for customer: Customer in customers {
-            customerContents.append(CustomerContent(id: customer.id, secret: customer.secret))
+            customerDTOs.append(CustomerDTO(id: customer.id, secret: customer.secret))
         }
 
         // Return the customers (Vapor Model).
-        return customerContents
+        return customerDTOs
     }
 }

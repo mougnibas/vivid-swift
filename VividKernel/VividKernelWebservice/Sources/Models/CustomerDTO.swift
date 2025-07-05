@@ -10,7 +10,7 @@ import Vapor
 import VividCommon
 
 /// A representation of a customer.
-struct CustomerContent: Content {
+struct CustomerDTO: Content {
 
     /// Unique identifier of the customer.
     public let id: String

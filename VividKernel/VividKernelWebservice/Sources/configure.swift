@@ -12,7 +12,7 @@ import Vapor
 public func configure(_ app: Application) async throws {
 
     // Register my controller.
-    try app.register(collection: ServiceController())
+    try app.register(collection: KernelServiceCustomerController())
 
     // register routes.
     try routes(app)
