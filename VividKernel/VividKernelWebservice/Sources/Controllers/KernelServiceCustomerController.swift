@@ -14,7 +14,7 @@ import VividKernelImpl
 /// Kernel service about customers as a Vapor Controller.
 struct KernelServiceCustomerController: RouteCollection {
 
-    /// Service to use.
+    // Service to use.
     // TODO Bad practice, use inversion of control pattern instead.
     let service: any IKernelService = KernelServiceImpl()
 

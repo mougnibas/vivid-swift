@@ -10,8 +10,8 @@ import VividCommon
 import VaporTesting
 import Testing
 
-@Suite("VividKernelWebservice unit test")
-struct VividKernelWebserviceTests {
+@Suite("KernelServiceCustomerController unit test")
+struct KernelServiceCustomerControllerTests {
 
     @Test("Send POST to customer should return this new customer")
     func sendPostToCustomerShouldReturnThisNewCustomer() async throws {
