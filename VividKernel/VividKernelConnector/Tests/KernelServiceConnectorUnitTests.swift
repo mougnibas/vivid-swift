@@ -8,19 +8,29 @@
 import Foundation
 import Testing
 import VividCommon
+import VividKernelContract
+import VividKernelImpl
 @testable import VividKernelConnector
 
 /// Unit tests of ``KernelServiceConnector`` class.
 @Suite("KernelServiceConnector unit test")
 struct KernelServiceConnectorUnitTests {
 
+    // Internal service
+    let serviceInternal: IKernelService
+
     // Service to test
     let service: KernelServiceConnector
 
     init() async throws {
+
+        // Create and populate the internal service
+        serviceInternal = InMemoryKernelServiceImpl()
+        await serviceInternal.addCustomer(Customer("my-id", "my-secret"))
+        await serviceInternal.addCustomer(Customer("my-id-2", "my-secret-2"))
+
+        // Create a connector
         service = KernelServiceConnector()
-        await service.addCustomer(Customer("my-id", "my-secret"))
-        await service.addCustomer(Customer("my-id-2", "my-secret-2"))
     }
 
     @Test("Default constructor should not throw exception")

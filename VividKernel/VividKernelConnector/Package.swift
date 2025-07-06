@@ -30,6 +30,7 @@ let package = Package(
         // Private dependencies.
         .package(path: "../../VividCommon"),
         .package(path: "../VividKernelContract"),
+        .package(path: "../VividKernelImpl"),
     ],
 
     // We have the following targets.
@@ -42,6 +43,7 @@ let package = Package(
             dependencies: [
                 "VividCommon",
                 "VividKernelContract",
+                "VividKernelImpl",
             ],
             plugins: [.plugin(name: "SwiftLintBuildToolPlugin", package: "SwiftLintPlugins")]
         ),
