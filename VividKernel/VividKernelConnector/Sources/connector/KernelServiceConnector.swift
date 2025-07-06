@@ -12,52 +12,22 @@ import VividKernelContract
 /// Connector based implementation of kernel service.
 public actor KernelServiceConnector: IKernelService {
 
-    // TODO Use a real connector.
-
-    // Map of customers.
-    private var customers: [String: Customer] = [:]
-
     public func addCustomer(_ customer: Customer) {
-        customers[customer.id] = customer
+        // TODO Write this method.
     }
 
     public func createNewCustomer() -> Customer {
-
-        // Create a new customer.
-        let customerId: String = UUID().uuidString
-        let customerSecret: String = UUID().uuidString
-        let customer: Customer = Customer(customerId, customerSecret)
-
-        // Add it to the in-memory map.
-        customers[customerId] = customer
-
-        // Return the result.
-        return customer
+        // TODO Write this method.
+        return Customer("id", "secret")
     }
 
     public func getCustomer( _ id: String) -> Customer? {
-
-        // Try to find the customer.
-        let customer: Customer? = customers[id]
-
-        // If the customer is not found, return nil.
-        guard customer != nil else {
-            return nil
-        }
-
-        // Customer if found. Return it.
-        return customer
+        // TODO Write this method.
+        return Customer("id", "secret")
     }
 
     public func getCustomers() -> [Customer] {
-
-        // Create an array from map values.
-        var customersArray: [Customer] = Array(customers.values)
-
-        // Sort the customers, to retrieve them always in the same order.
-        customersArray.sort { $0.id < $1.id }
-
-        // Return the result.
-        return customersArray
+        // TODO Write this method.
+        return [Customer("id", "secret")]
     }
 }
