@@ -26,6 +26,7 @@ let package = Package(
 
         // Public dependencies.
         .package(url: "https://github.com/SimplyDanny/SwiftLintPlugins", exact: "0.59.1"),
+        .package(url: "https://github.com/vapor/vapor.git", exact: "4.115.0"),
 
         // Private dependencies.
         .package(path: "../../VividCommon"),
@@ -44,6 +45,7 @@ let package = Package(
                 "VividCommon",
                 "VividKernelContract",
                 "VividKernelImpl",
+                .product(name: "Vapor", package: "vapor"),
             ],
             plugins: [.plugin(name: "SwiftLintBuildToolPlugin", package: "SwiftLintPlugins")]
         ),
@@ -52,7 +54,10 @@ let package = Package(
         // SwiftLint is used as plugin when the project is tested.
         .testTarget(
             name: "VividKernelConnectorTests",
-            dependencies: ["VividKernelConnector"],
+            dependencies: [
+                "VividKernelConnector",
+                .product(name: "VaporTesting", package: "vapor"),
+            ],
             plugins: [.plugin(name: "SwiftLintBuildToolPlugin", package: "SwiftLintPlugins")]
         )
     ]
