@@ -11,6 +11,8 @@ import VividCommon
 /// Connector based implementation of kernel service.
 public actor KernelServiceConnector: IKernelService {
 
+    // TODO Use a real connector.
+
     // Map of customers.
     private var customers: [String: Customer] = [:]
 
