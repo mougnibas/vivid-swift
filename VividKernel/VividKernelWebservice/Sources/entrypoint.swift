@@ -7,8 +7,6 @@
 
 import Vapor
 import Logging
-import NIOCore
-import NIOPosix
 import VividKernelContract
 import VividKernelImpl
 

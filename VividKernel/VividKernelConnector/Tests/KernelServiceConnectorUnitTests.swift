@@ -7,29 +7,33 @@
 
 import Foundation
 import Testing
+import Vapor
 import VividCommon
 import VividKernelContract
 import VividKernelImpl
+import VividKernelWebservice
 @testable import VividKernelConnector
 
 /// Unit tests of ``KernelServiceConnector`` class.
 @Suite("KernelServiceConnector unit test")
 struct KernelServiceConnectorUnitTests {
 
-    // Internal service
+    // Internal service.
     let serviceInternal: IKernelService
 
-    // Service to test
+    // Service to test.
     let service: KernelServiceConnector
 
     init() async throws {
 
-        // Create and populate the internal service
+        // Create and populate the internal service.
         serviceInternal = InMemoryKernelServiceImpl()
         await serviceInternal.addCustomer(Customer("my-id", "my-secret"))
         await serviceInternal.addCustomer(Customer("my-id-2", "my-secret-2"))
 
-        // Create a connector
+        // TODO Run embeded Vapor server.
+
+        // Create a connector.
         service = KernelServiceConnector()
     }
 

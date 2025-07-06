@@ -32,6 +32,7 @@ let package = Package(
         .package(path: "../../VividCommon"),
         .package(path: "../VividKernelContract"),
         .package(path: "../VividKernelImpl"),
+        .package(path: "../VividKernelWebservice"),
     ],
 
     // We have the following targets.
@@ -45,7 +46,6 @@ let package = Package(
                 "VividCommon",
                 "VividKernelContract",
                 "VividKernelImpl",
-                .product(name: "Vapor", package: "vapor"),
             ],
             plugins: [.plugin(name: "SwiftLintBuildToolPlugin", package: "SwiftLintPlugins")]
         ),
@@ -56,7 +56,7 @@ let package = Package(
             name: "VividKernelConnectorTests",
             dependencies: [
                 "VividKernelConnector",
-                .product(name: "VaporTesting", package: "vapor"),
+                .product(name: "Vapor", package: "vapor"),
             ],
             plugins: [.plugin(name: "SwiftLintBuildToolPlugin", package: "SwiftLintPlugins")]
         )
