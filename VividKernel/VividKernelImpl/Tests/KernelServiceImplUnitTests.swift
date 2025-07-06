@@ -33,6 +33,20 @@ struct KernelServiceImplUnitTests {
         }
     }
 
+    @Test("'addCustomer' then 'getCustomer' should return this customer")
+    func addCustomerShouldThenGetCustomerShouldReturnThisCustomer() async throws {
+
+        // Arrange.
+        let expected: Customer = Customer("my-id-3", "my-secret-3")
+
+        // Act.
+        await service.addCustomer(expected)
+        let actual: Customer? = await service.getCustomer(expected.id)
+
+        // Assert.
+        #expect(actual == expected)
+    }
+
     @Test("Calling 'createNewCustomer' should return another customer")
     func createNewCustomerShouldReturnAnotherCustomer() async throws {
 

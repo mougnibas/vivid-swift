@@ -24,6 +24,36 @@ struct KernelServiceCustomerControllerTests {
         await kernelService.addCustomer(Customer("my-id-2", "my-secret-2"))
     }
 
+    @Test("Send POST to customer (with json) should return this new customer")
+    func sendPostToCustomerWithJsonShouldReturnThisNewCustomer() async throws {
+
+        // Arrange
+        let expectedStatus: HTTPResponseStatus = .ok
+        let expected: Customer = Customer("my-id-3", "my-secret-3")
+        let json: Data = try JSONEncoder().encode(CustomerDTO(id: expected.id, secret: expected.secret))
+
+        // Act.
+        // swiftlint:disable multiple_closures_with_trailing_closure
+        try await withApp(configure: { app in try await configure(kernelService, app)}) { app in
+        // swiftlint:enable multiple_closures_with_trailing_closure
+
+            try await app.testing().test(
+                .POST,
+                "customer",
+                headers: ["Content-Type": "application/json"],
+                body: .init(data: json),
+                afterResponse: { response async throws in
+
+                let actualStatus: HTTPResponseStatus = response.status
+                let actual: Customer? = await kernelService.getCustomer(expected.id)
+
+                // Assert.
+                #expect(actualStatus == expectedStatus)
+                #expect(actual == expected)
+            })
+        }
+    }
+
     @Test("Send POST to customer should return one more customer")
     func sendPostToCustomerShouldReturnOneMoreCustomer() async throws {
 
@@ -37,9 +67,9 @@ struct KernelServiceCustomerControllerTests {
         try await withApp(configure: { app in try await configure(kernelService, app)}) { app in
         // swiftlint:enable multiple_closures_with_trailing_closure
 
-            try await app.testing().test(.POST, "customer", afterResponse: { res async throws in
+            try await app.testing().test(.POST, "customer/auto", afterResponse: { response async throws in
 
-                let actualStatus: HTTPResponseStatus = res.status
+                let actualStatus: HTTPResponseStatus = response.status
                 let actualNumberOfCustomersAfter: Int = await kernelService.getCustomers().count
 
                 // Assert.
@@ -60,9 +90,9 @@ struct KernelServiceCustomerControllerTests {
         try await withApp(configure: { app in try await configure(kernelService, app)}) { app in
         // swiftlint:enable multiple_closures_with_trailing_closure
 
-            try await app.testing().test(.GET, "customer/my-id-not-found", afterResponse: { res async in
+            try await app.testing().test(.GET, "customer/my-id-not-found", afterResponse: { response async in
 
-                let actualStatus: HTTPResponseStatus = res.status
+                let actualStatus: HTTPResponseStatus = response.status
 
                 // Assert.
                 #expect(actualStatus == expectedStatus)
@@ -82,10 +112,10 @@ struct KernelServiceCustomerControllerTests {
         try await withApp(configure: { app in try await configure(kernelService, app)}) { app in
         // swiftlint:enable multiple_closures_with_trailing_closure
 
-            try await app.testing().test(.GET, "customer/my-id", afterResponse: { res async throws in
+            try await app.testing().test(.GET, "customer/my-id", afterResponse: { response async throws in
 
-                let actualStatus: HTTPResponseStatus = res.status
-                let json: String = res.body.string
+                let actualStatus: HTTPResponseStatus = response.status
+                let json: String = response.body.string
                 let jsonData: Data? = json.data(using: .utf8)
                 let actualContent: CustomerDTO? = try JSONDecoder().decode(CustomerDTO.self, from: jsonData!)
 
@@ -108,10 +138,10 @@ struct KernelServiceCustomerControllerTests {
         try await withApp(configure: { app in try await configure(kernelService, app)}) { app in
         // swiftlint:enable multiple_closures_with_trailing_closure
 
-            try await app.testing().test(.GET, "customer/my-id-2", afterResponse: { res async throws in
+            try await app.testing().test(.GET, "customer/my-id-2", afterResponse: { response async throws in
 
-                let actualStatus: HTTPResponseStatus = res.status
-                let json: String = res.body.string
+                let actualStatus: HTTPResponseStatus = response.status
+                let json: String = response.body.string
                 let jsonData: Data? = json.data(using: .utf8)
                 let actualContent: CustomerDTO? = try JSONDecoder().decode(CustomerDTO.self, from: jsonData!)
 
@@ -137,10 +167,10 @@ struct KernelServiceCustomerControllerTests {
         try await withApp(configure: { app in try await configure(kernelService, app)}) { app in
         // swiftlint:enable multiple_closures_with_trailing_closure
 
-            try await app.testing().test(.GET, "customer", afterResponse: { res async throws in
+            try await app.testing().test(.GET, "customer", afterResponse: { response async throws in
 
-                let actualStatus: HTTPResponseStatus = res.status
-                let json: String = res.body.string
+                let actualStatus: HTTPResponseStatus = response.status
+                let json: String = response.body.string
                 let jsonData: Data? = json.data(using: .utf8)
                 let actualContent: [CustomerDTO]? = try JSONDecoder().decode([CustomerDTO].self, from: jsonData!)
 
