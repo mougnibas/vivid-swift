@@ -7,32 +7,44 @@
 
 @testable import VividKernelWebservice
 import VividCommon
+import VividKernelContract
+import VividKernelImpl
 import VaporTesting
 import Testing
 
 @Suite("KernelServiceCustomerController unit test")
 struct KernelServiceCustomerControllerTests {
 
-    @Test("Send POST to customer should return this new customer")
-    func sendPostToCustomerShouldReturnThisNewCustomer() async throws {
+    // KernelService to be used by controller.
+    let kernelService: any IKernelService
+
+    init() async throws {
+        kernelService = InMemoryKernelServiceImpl()
+        await kernelService.addCustomer(Customer("my-id", "my-secret"))
+        await kernelService.addCustomer(Customer("my-id-2", "my-secret-2"))
+    }
+
+    @Test("Send POST to customer should return one more customer")
+    func sendPostToCustomerShouldReturnOneMoreCustomer() async throws {
 
         // Arrange
         let expectedStatus: HTTPResponseStatus = .ok
-        let expectedContent: CustomerDTO = CustomerDTO(id: "my-new-id", secret: "my-new-secret")
+        let numberOfCustomersBefore: Int = await kernelService.getCustomers().count
+        let expectedNumberOfCustomersAfter: Int = numberOfCustomersBefore + 1
 
         // Act.
-        try await withApp(configure: configure) { app in
+        // swiftlint:disable multiple_closures_with_trailing_closure
+        try await withApp(configure: { app in try await configure(kernelService, app)}) { app in
+        // swiftlint:enable multiple_closures_with_trailing_closure
 
             try await app.testing().test(.POST, "customer", afterResponse: { res async throws in
 
                 let actualStatus: HTTPResponseStatus = res.status
-                let json: String = res.body.string
-                let jsonData: Data? = json.data(using: .utf8)
-                let actualContent: CustomerDTO? = try JSONDecoder().decode(CustomerDTO.self, from: jsonData!)
+                let actualNumberOfCustomersAfter: Int = await kernelService.getCustomers().count
 
                 // Assert.
                 #expect(actualStatus == expectedStatus)
-                #expect(actualContent == expectedContent)
+                #expect(actualNumberOfCustomersAfter == expectedNumberOfCustomersAfter)
             })
         }
     }
@@ -44,7 +56,9 @@ struct KernelServiceCustomerControllerTests {
         let expectedStatus: HTTPResponseStatus = .notFound
 
         // Act.
-        try await withApp(configure: configure) { app in
+        // swiftlint:disable multiple_closures_with_trailing_closure
+        try await withApp(configure: { app in try await configure(kernelService, app)}) { app in
+        // swiftlint:enable multiple_closures_with_trailing_closure
 
             try await app.testing().test(.GET, "customer/my-id-not-found", afterResponse: { res async in
 
@@ -64,7 +78,9 @@ struct KernelServiceCustomerControllerTests {
         let expectedContent: CustomerDTO = CustomerDTO(id: "my-id", secret: "my-secret")
 
         // Act.
-        try await withApp(configure: configure) { app in
+        // swiftlint:disable multiple_closures_with_trailing_closure
+        try await withApp(configure: { app in try await configure(kernelService, app)}) { app in
+        // swiftlint:enable multiple_closures_with_trailing_closure
 
             try await app.testing().test(.GET, "customer/my-id", afterResponse: { res async throws in
 
@@ -88,7 +104,9 @@ struct KernelServiceCustomerControllerTests {
         let expectedContent: CustomerDTO = CustomerDTO(id: "my-id-2", secret: "my-secret-2")
 
         // Act.
-        try await withApp(configure: configure) { app in
+        // swiftlint:disable multiple_closures_with_trailing_closure
+        try await withApp(configure: { app in try await configure(kernelService, app)}) { app in
+        // swiftlint:enable multiple_closures_with_trailing_closure
 
             try await app.testing().test(.GET, "customer/my-id-2", afterResponse: { res async throws in
 
@@ -115,7 +133,10 @@ struct KernelServiceCustomerControllerTests {
         ]
 
         // Act.
-        try await withApp(configure: configure) { app in
+        // swiftlint:disable multiple_closures_with_trailing_closure
+        try await withApp(configure: { app in try await configure(kernelService, app)}) { app in
+        // swiftlint:enable multiple_closures_with_trailing_closure
+
             try await app.testing().test(.GET, "customer", afterResponse: { res async throws in
 
                 let actualStatus: HTTPResponseStatus = res.status

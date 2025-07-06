@@ -19,6 +19,9 @@ struct KernelServiceCustomerController: RouteCollection, Sendable {
 
     func boot(routes: any RoutesBuilder) throws {
 
+        // TODO
+        // Route POST "/customer" with customer json : Create that new customer.
+
         // Route POST "/customer" : Create a new customer, then return it.
         routes.post("customer", use: postCustomer)
 

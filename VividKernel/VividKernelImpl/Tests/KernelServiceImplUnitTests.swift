@@ -33,8 +33,8 @@ struct KernelServiceImplUnitTests {
         }
     }
 
-    @Test("Calling 'createNewCustomer' should return this customer")
-    func createNewCustomerShouldReturnThisCustomer() async throws {
+    @Test("Calling 'createNewCustomer' should return another customer")
+    func createNewCustomerShouldReturnAnotherCustomer() async throws {
 
         // Arrange.
         let numberOfCustomersBefore: Int = await service.getCustomers().count

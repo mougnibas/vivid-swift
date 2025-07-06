@@ -11,10 +11,7 @@ import VividKernelContract
 import VividKernelImpl
 
 // configures your application
-public func configure(_ app: Application) async throws {
-
-    // My services
-    let kernelService: any IKernelService = InMemoryKernelServiceImpl()
+public func configure(_ kernelService: any IKernelService, _ app: Application) async throws {
 
     // Register my controller.
     try app.register(collection: KernelServiceCustomerController(service: kernelService))

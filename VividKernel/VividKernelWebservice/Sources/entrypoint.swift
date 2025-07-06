@@ -9,6 +9,8 @@ import Vapor
 import Logging
 import NIOCore
 import NIOPosix
+import VividKernelContract
+import VividKernelImpl
 
 @main
 enum Entrypoint {
@@ -18,8 +20,11 @@ enum Entrypoint {
 
         let app = try await Application.make(env)
 
+        // Kernel service to use in the app.
+        let kernelService: any IKernelService = InMemoryKernelServiceImpl()
+
         do {
-            try await configure(app)
+            try await configure(kernelService, app)
             try await app.execute()
         } catch {
             app.logger.report(error: error)
