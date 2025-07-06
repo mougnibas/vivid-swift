@@ -7,6 +7,7 @@
 
 import Foundation
 import VividCommon
+import VividKernelContract
 
 /// Connector based implementation of kernel service.
 public actor KernelServiceConnector: IKernelService {

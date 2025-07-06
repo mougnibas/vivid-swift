@@ -8,7 +8,7 @@
 import Foundation
 import Testing
 import VividCommon
-@testable import VividKernelContract
+@testable import VividKernelConnector
 
 /// Unit tests of ``KernelServiceConnector`` class.
 @Suite("KernelServiceConnector unit test")

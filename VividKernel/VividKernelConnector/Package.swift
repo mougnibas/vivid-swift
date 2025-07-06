@@ -5,7 +5,7 @@ import PackageDescription
 let package = Package(
 
     // Name of the package.
-    name: "VividKernelContract",
+    name: "VividKernelConnector",
 
     // Can run only on this platform.
     // This "requirement" is actually only for SwiftLint.
@@ -16,8 +16,8 @@ let package = Package(
     // This is a library package.
     products: [
         .library(
-            name: "VividKernelContract",
-            targets: ["VividKernelContract"]
+            name: "VividKernelConnector",
+            targets: ["VividKernelConnector"]
         )
     ],
 
@@ -29,6 +29,7 @@ let package = Package(
 
         // Private dependencies.
         .package(path: "../../VividCommon"),
+        .package(path: "../VividKernelContract"),
     ],
 
     // We have the following targets.
@@ -37,8 +38,19 @@ let package = Package(
         // Main target.
         // SwiftLint is used as plugin when the project is build.
         .target(
-            name: "VividKernelContract",
-            dependencies: ["VividCommon"],
+            name: "VividKernelConnector",
+            dependencies: [
+                "VividCommon",
+                "VividKernelContract",
+            ],
+            plugins: [.plugin(name: "SwiftLintBuildToolPlugin", package: "SwiftLintPlugins")]
+        ),
+
+        // Test target, with only one dependency : The main package.
+        // SwiftLint is used as plugin when the project is tested.
+        .testTarget(
+            name: "VividKernelConnectorTests",
+            dependencies: ["VividKernelConnector"],
             plugins: [.plugin(name: "SwiftLintBuildToolPlugin", package: "SwiftLintPlugins")]
         )
     ]
