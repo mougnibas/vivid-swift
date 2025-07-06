@@ -11,10 +11,16 @@ import VividCommon
 /// Definition of Kernel service.
 public protocol IKernelService: Sendable {
 
+    /// Add a customer.
+    ///
+    /// - Parameters :
+    ///   - customer: The customer to add.
+    func addCustomer(_ customer: Customer) async
+
     /// Create, then return a new customer.
     ///
     /// - Returns: A newly created customer.
-    func createNewCustomer() -> Customer
+    func createNewCustomer() async -> Customer
 
     /// Get a customer, by id, (if any).
     ///
@@ -22,10 +28,10 @@ public protocol IKernelService: Sendable {
     ///  - id: Identifier of a customer
     ///
     /// - Returns The customer if identifier exist, nil otherwise.
-    func getCustomer(_ id: String) -> Customer?
+    func getCustomer(_ id: String) async -> Customer?
 
     /// Get all customers.
     ///
     /// - Returns : All customers.
-    func getCustomers() -> [Customer]
+    func getCustomers() async -> [Customer]
 }

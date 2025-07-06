@@ -15,83 +15,90 @@ import VividKernelContract
 @Suite("KernelServiceImpl unit test")
 struct KernelServiceImplUnitTests {
 
+    // Service to test
+    let service: InMemoryKernelServiceImpl
+
+    init() async throws {
+        service = InMemoryKernelServiceImpl()
+        await service.addCustomer(Customer("my-id", "my-secret"))
+        await service.addCustomer(Customer("my-id-2", "my-secret-2"))
+    }
+
     @Test("Default constructor should not throw exception")
     func defaultConstructorShouldNotThrowException() throws {
 
         // Arrange, act and assert.
         #expect(throws: Never.self) {
-            KernelServiceImpl()
+            InMemoryKernelServiceImpl()
         }
     }
 
     @Test("Calling 'createNewCustomer' should return this customer")
-    func createNewCustomerShouldReturnThisCustomer() throws {
+    func createNewCustomerShouldReturnThisCustomer() async throws {
 
         // Arrange.
-        let service: IKernelService = KernelServiceImpl()
-        let expected: Customer = Customer("my-new-id", "my-new-secret")
+        let numberOfCustomersBefore: Int = await service.getCustomers().count
+        let expected: Int = numberOfCustomersBefore + 1
 
         // Act.
-        let actual: Customer = service.createNewCustomer()
+        _ = await service.createNewCustomer()
 
         // Assert.
+        let actual: Int = await service.getCustomers().count
+
         #expect(actual == expected)
     }
 
     @Test("get customer by id with 'my-id' should return this customer")
-    func getCustomerByIdWithIdOneShouldReturnThisCustomer() throws {
+    func getCustomerByIdWithIdOneShouldReturnThisCustomer() async throws {
 
         // Arrange.
-        let service: IKernelService = KernelServiceImpl()
         let expected: Customer = Customer("my-id", "my-secret")
 
         // Act.
-        let actual: Customer? = service.getCustomer("my-id")
+        let actual: Customer? = await service.getCustomer("my-id")
 
         // Assert
         #expect(actual == expected)
     }
 
     @Test("get customer by id with 'my-id-2' should return this customer")
-    func getCustomerByIdWithIdTwoShouldReturnThisCustomer() throws {
+    func getCustomerByIdWithIdTwoShouldReturnThisCustomer() async throws {
 
         // Arrange.
-        let service: IKernelService = KernelServiceImpl()
         let expected: Customer = Customer("my-id-2", "my-secret-2")
 
         // Act.
-        let actual: Customer? = service.getCustomer("my-id-2")
+        let actual: Customer? = await service.getCustomer("my-id-2")
 
         // Assert
         #expect(actual == expected)
     }
 
     @Test("get customer by id with 'my-id-3' should return nil")
-    func getCustomerByIdWithIdThreeShouldReturnNil() throws {
+    func getCustomerByIdWithIdThreeShouldReturnNil() async throws {
 
         // Arrange.
-        let service: IKernelService = KernelServiceImpl()
         let expected: Customer? = nil
 
         // Act.
-        let actual: Customer? = service.getCustomer("my-id-3")
+        let actual: Customer? = await service.getCustomer("my-id-3")
 
         // Assert
         #expect(actual == expected)
     }
 
     @Test("get all customers should return all customers")
-    func getCustomersShouldReturnThisCustomers() throws {
+    func getCustomersShouldReturnThisCustomers() async throws {
 
         // Arrange.
-        let service: IKernelService = KernelServiceImpl()
         let expected: [Customer] = [
             Customer("my-id", "my-secret"),
             Customer("my-id-2", "my-secret-2")
         ]
 
         // Act.
-        let actual: [Customer] = service.getCustomers()
+        let actual: [Customer] = await service.getCustomers()
 
         // Assert
         #expect(actual == expected)

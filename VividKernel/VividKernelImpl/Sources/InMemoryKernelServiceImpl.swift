@@ -7,12 +7,15 @@
 
 import Foundation
 import VividCommon
+import VividKernelContract
 
-/// Connector based implementation of kernel service.
-public actor KernelServiceConnector: IKernelService {
+/// In-memory kernel service implementation..
+public actor InMemoryKernelServiceImpl: IKernelService {
 
     // Map of customers.
-    private var customers: [String: Customer] = [:]
+    var customers: [String: Customer] = [:]
+
+    public init () {}
 
     public func addCustomer(_ customer: Customer) {
         customers[customer.id] = customer

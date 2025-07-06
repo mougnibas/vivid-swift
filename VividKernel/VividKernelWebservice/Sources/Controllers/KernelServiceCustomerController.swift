@@ -15,7 +15,7 @@ import VividKernelImpl
 struct KernelServiceCustomerController: RouteCollection, Sendable {
 
     // Service to use.
-    let service: IKernelService
+    let service: any IKernelService
 
     func boot(routes: any RoutesBuilder) throws {
 
@@ -32,7 +32,7 @@ struct KernelServiceCustomerController: RouteCollection, Sendable {
     func postCustomer(req: Request) async throws -> CustomerDTO {
 
         // Create the customer
-        let newCustomer: Customer = service.createNewCustomer()
+        let newCustomer: Customer = await service.createNewCustomer()
 
         // Put the customer in Vapor Model.
         let customerDTO: CustomerDTO = CustomerDTO(id: newCustomer.id, secret: newCustomer.secret)
@@ -47,7 +47,7 @@ struct KernelServiceCustomerController: RouteCollection, Sendable {
         let customerId: String = req.parameters.get("id")!
 
         // Get this customer, if any.
-        let customer: Customer? = service.getCustomer(customerId)
+        let customer: Customer? = await service.getCustomer(customerId)
 
         // Handle customer not found.
         guard customer != nil else {
@@ -64,7 +64,7 @@ struct KernelServiceCustomerController: RouteCollection, Sendable {
     func getAllCustomers(req: Request) async throws -> [CustomerDTO] {
 
         // Get all customers.
-        let customers: [Customer] = service.getCustomers()
+        let customers: [Customer] = await service.getCustomers()
 
         // Put the customers in Vapor Model.
         var customerDTOs: [CustomerDTO] = []
