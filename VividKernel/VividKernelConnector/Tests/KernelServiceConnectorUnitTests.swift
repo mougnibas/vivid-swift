@@ -14,7 +14,7 @@ import VividKernelWebserviceLib
 @testable import VividKernelConnector
 
 /// Unit tests of ``KernelServiceConnector`` class.
-@Suite("KernelServiceConnector unit test")
+@Suite("KernelServiceConnector unit test", .serialized)
 struct KernelServiceConnectorUnitTests {
 
     // Internal service.
@@ -33,25 +33,30 @@ struct KernelServiceConnectorUnitTests {
         await serviceInternal.addCustomer(Customer("my-id", "my-secret"))
         await serviceInternal.addCustomer(Customer("my-id-2", "my-secret-2"))
 
-        // TODO
         // Run embeded Vapor server.
         let env = try Environment.detect()
         app = try await Application.make(env)
         try app.register(collection: KernelServiceCustomerController(service: serviceInternal))
-        //try await app.execute()
-        try await app.asyncShutdown()
+        try await app.startup()
 
         // Create a connector.
         service = KernelServiceConnector()
     }
 
+    func vaporStop() async throws {
+        try await app.asyncShutdown()
+    }
+
     @Test("Default constructor should not throw exception")
-    func defaultConstructorShouldNotThrowException() throws {
+    func defaultConstructorShouldNotThrowException() async throws {
 
         // Arrange, act and assert.
         #expect(throws: Never.self) {
             KernelServiceConnector()
         }
+
+        // Stop vapor instance.
+        try await vaporStop()
     }
 
     @Test("'addCustomer' then 'getCustomer' should return this customer")
@@ -66,6 +71,9 @@ struct KernelServiceConnectorUnitTests {
 
         // Assert.
         #expect(actual == expected)
+
+        // Stop vapor instance.
+        try await vaporStop()
     }
 
     @Test("Calling 'createNewCustomer' should return one more customer")
@@ -81,6 +89,9 @@ struct KernelServiceConnectorUnitTests {
         // Assert.
         let actual: Int = await service.getCustomers().count
         #expect(actual == expected)
+
+        // Stop vapor instance.
+        try await vaporStop()
     }
 
     @Test("get customer by id with 'my-id' should return this customer")
@@ -94,6 +105,9 @@ struct KernelServiceConnectorUnitTests {
 
         // Assert
         #expect(actual == expected)
+
+        // Stop vapor instance.
+        try await vaporStop()
     }
 
     @Test("get customer by id with 'my-id-2' should return this customer")
@@ -107,6 +121,9 @@ struct KernelServiceConnectorUnitTests {
 
         // Assert
         #expect(actual == expected)
+
+        // Stop vapor instance.
+        try await vaporStop()
     }
 
     @Test("get customer by id with 'my-id-3' should return nil")
@@ -120,6 +137,9 @@ struct KernelServiceConnectorUnitTests {
 
         // Assert
         #expect(actual == expected)
+
+        // Stop vapor instance.
+        try await vaporStop()
     }
 
     @Test("get all customers should return all customers")
@@ -136,5 +156,8 @@ struct KernelServiceConnectorUnitTests {
 
         // Assert
         #expect(actual == expected)
+
+        // Stop vapor instance.
+        try await vaporStop()
     }
 }
