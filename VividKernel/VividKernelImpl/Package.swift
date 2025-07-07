@@ -17,7 +17,8 @@ let package = Package(
     products: [
         .library(
             name: "VividKernelImpl",
-            targets: ["VividKernelImpl"]),
+            targets: ["VividKernelImpl"]
+        )
     ],
 
     // This package declare this dependencies (package level).

@@ -10,7 +10,7 @@ import Testing
 import Vapor
 import VividKernelContract
 import VividKernelImpl
-import VividKernelWebservice
+import VividKernelWebserviceLib
 @testable import VividKernelConnector
 
 /// Unit tests of ``KernelServiceConnector`` class.

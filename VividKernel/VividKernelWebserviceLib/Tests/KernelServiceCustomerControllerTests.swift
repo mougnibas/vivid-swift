@@ -5,7 +5,7 @@
 // Everyone is permitted to copy and distribute verbatim copies
 // of this license document, but changing it is not allowed.
 
-@testable import VividKernelWebservice
+@testable import VividKernelWebserviceLib
 import VividKernelContract
 import VividKernelImpl
 import VaporTesting

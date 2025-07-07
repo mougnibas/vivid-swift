@@ -5,10 +5,10 @@ import PackageDescription
 let package = Package(
 
     // Name of the package.
-    name: "VividKernelConnector",
+    name: "VividKernelWebserviceLib",
 
     // Can run only on this platform.
-    // This "requirement" is actually only for SwiftLint.
+    // This "requirement" is for SwiftLint and Vapor.
     platforms: [
         .macOS(.v15)
     ],
@@ -16,8 +16,8 @@ let package = Package(
     // This is a library package.
     products: [
         .library(
-            name: "VividKernelConnector",
-            targets: ["VividKernelConnector"]
+            name: "VividKernelWebserviceLib",
+            targets: ["VividKernelWebserviceLib"]
         )
     ],
 
@@ -31,30 +31,28 @@ let package = Package(
         // Private dependencies.
         .package(path: "../VividKernelContract"),
         .package(path: "../VividKernelImpl"),
-        .package(path: "../VividKernelWebserviceLib"),
     ],
 
     // We have the following targets.
     targets: [
 
-        // Main target.
-        // SwiftLint is used as plugin when the project is build.
+        // Executable main target.
         .target(
-            name: "VividKernelConnector",
+            name: "VividKernelWebserviceLib",
             dependencies: [
                 "VividKernelContract",
                 "VividKernelImpl",
+                .product(name: "Vapor", package: "vapor"),
             ],
-            plugins: [.plugin(name: "SwiftLintBuildToolPlugin", package: "SwiftLintPlugins")]
+            plugins: [.plugin(name: "SwiftLintBuildToolPlugin", package: "SwiftLintPlugins")],
         ),
 
-        // Test target, with only one dependency : The main package.
-        // SwiftLint is used as plugin when the project is tested.
+        // Test target
         .testTarget(
-            name: "VividKernelConnectorTests",
+            name: "VividKernelWebserviceLibTests",
             dependencies: [
-                "VividKernelConnector",
-                .product(name: "Vapor", package: "vapor"),
+                "VividKernelWebserviceLib",
+                .product(name: "VaporTesting", package: "vapor"),
             ],
             plugins: [.plugin(name: "SwiftLintBuildToolPlugin", package: "SwiftLintPlugins")]
         )
