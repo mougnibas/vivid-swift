@@ -6,7 +6,6 @@
 // of this license document, but changing it is not allowed.
 
 import Foundation
-import VividCommon
 import VividKernelContract
 
 /// Connector based implementation of kernel service.

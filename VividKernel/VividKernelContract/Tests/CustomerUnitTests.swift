@@ -7,7 +7,7 @@
 
 import Foundation
 import Testing
-@testable import VividCommon
+@testable import VividKernelContract
 
 /// Unit tests of ``Customer`` struct.
 @Suite("Customer unit test")

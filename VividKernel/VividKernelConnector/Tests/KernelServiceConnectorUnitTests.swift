@@ -8,7 +8,6 @@
 import Foundation
 import Testing
 import Vapor
-import VividCommon
 import VividKernelContract
 import VividKernelImpl
 import VividKernelWebservice

@@ -6,7 +6,6 @@
 // of this license document, but changing it is not allowed.
 
 import Foundation
-import VividCommon
 import VividKernelContract
 
 /// In-memory kernel service implementation..

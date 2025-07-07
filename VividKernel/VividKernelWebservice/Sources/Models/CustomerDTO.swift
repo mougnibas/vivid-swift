@@ -7,7 +7,6 @@
 
 import Foundation
 import Vapor
-import VividCommon
 
 /// A representation of a customer.
 struct CustomerDTO: Content, Equatable {

@@ -7,7 +7,6 @@
 
 import Foundation
 import Vapor
-import VividCommon
 import VividKernelContract
 import VividKernelImpl
 

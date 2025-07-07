@@ -6,7 +6,6 @@
 // of this license document, but changing it is not allowed.
 
 @testable import VividKernelWebservice
-import VividCommon
 import VividKernelContract
 import VividKernelImpl
 import VaporTesting

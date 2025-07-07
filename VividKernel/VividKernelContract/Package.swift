@@ -26,9 +26,6 @@ let package = Package(
 
         // Public dependencies.
         .package(url: "https://github.com/SimplyDanny/SwiftLintPlugins", exact: "0.59.1"),
-
-        // Private dependencies.
-        .package(path: "../../VividCommon"),
     ],
 
     // We have the following targets.
@@ -38,7 +35,14 @@ let package = Package(
         // SwiftLint is used as plugin when the project is build.
         .target(
             name: "VividKernelContract",
-            dependencies: ["VividCommon"],
+            plugins: [.plugin(name: "SwiftLintBuildToolPlugin", package: "SwiftLintPlugins")]
+        ),
+
+        // Test target, with only one dependency : The main package.
+        // SwiftLint is used as plugin when the project is tested.
+        .testTarget(
+            name: "VividKernelContractTests",
+            dependencies: ["VividKernelContract"],
             plugins: [.plugin(name: "SwiftLintBuildToolPlugin", package: "SwiftLintPlugins")]
         )
     ]

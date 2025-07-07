@@ -7,7 +7,6 @@
 
 import Foundation
 import Testing
-import VividCommon
 import VividKernelContract
 @testable import VividKernelImpl
 

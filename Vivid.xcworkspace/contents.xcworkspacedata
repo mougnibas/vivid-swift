@@ -10,9 +10,6 @@
    <FileRef
       location = "group:README.md">
    </FileRef>
-   <FileRef
-      location = "group:VividCommon">
-   </FileRef>
    <FileSystemSynchronizedGroup
       location = "group:VividKernel"
       name = "VividKernel">

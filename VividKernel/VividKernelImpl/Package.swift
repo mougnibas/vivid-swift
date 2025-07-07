@@ -27,7 +27,6 @@ let package = Package(
         .package(url: "https://github.com/SimplyDanny/SwiftLintPlugins", exact: "0.59.1"),
 
         // Private dependencies.
-        .package(path: "../../VividCommon"),
         .package(path: "../VividKernelContract"),
     ],
 
@@ -39,7 +38,6 @@ let package = Package(
         .target(
             name: "VividKernelImpl",
             dependencies: [
-                "VividCommon",
                 "VividKernelContract"
             ],
             plugins: [.plugin(name: "SwiftLintBuildToolPlugin", package: "SwiftLintPlugins")]

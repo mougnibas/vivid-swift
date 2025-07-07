@@ -21,7 +21,6 @@ let package = Package(
         .package(url: "https://github.com/vapor/vapor.git", exact: "4.115.0"),
 
         // Private dependencies.
-        .package(path: "../../VividCommon"),
         .package(path: "../VividKernelContract"),
         .package(path: "../VividKernelImpl"),
     ],
@@ -33,7 +32,6 @@ let package = Package(
         .executableTarget(
             name: "VividKernelWebservice",
             dependencies: [
-                "VividCommon",
                 "VividKernelContract",
                 "VividKernelImpl",
                 .product(name: "Vapor", package: "vapor"),
