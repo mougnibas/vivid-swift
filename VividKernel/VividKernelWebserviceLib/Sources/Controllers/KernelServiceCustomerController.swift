@@ -11,12 +11,16 @@ import VividKernelContract
 import VividKernelImpl
 
 /// Kernel service about customers as a Vapor Controller.
-struct KernelServiceCustomerController: RouteCollection, Sendable {
+public struct KernelServiceCustomerController: RouteCollection, Sendable {
 
     // Service to use.
     let service: any IKernelService
 
-    func boot(routes: any RoutesBuilder) throws {
+    public init(service: any IKernelService) {
+        self.service = service
+    }
+
+    public func boot(routes: any RoutesBuilder) throws {
 
         // Route POST "/customer" with customer json : Create that new customer.
         routes.post("customer", use: postCustomerWithJson)

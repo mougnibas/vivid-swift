@@ -23,6 +23,9 @@ struct KernelServiceConnectorUnitTests {
     // Service to test.
     let service: KernelServiceConnector
 
+    // Vapor Application.
+    let app: Application
+
     init() async throws {
 
         // Create and populate the internal service.
@@ -30,7 +33,13 @@ struct KernelServiceConnectorUnitTests {
         await serviceInternal.addCustomer(Customer("my-id", "my-secret"))
         await serviceInternal.addCustomer(Customer("my-id-2", "my-secret-2"))
 
-        // TODO Run embeded Vapor server.
+        // TODO
+        // Run embeded Vapor server.
+        let env = try Environment.detect()
+        app = try await Application.make(env)
+        try app.register(collection: KernelServiceCustomerController(service: serviceInternal))
+        //try await app.execute()
+        try await app.asyncShutdown()
 
         // Create a connector.
         service = KernelServiceConnector()
@@ -71,7 +80,6 @@ struct KernelServiceConnectorUnitTests {
 
         // Assert.
         let actual: Int = await service.getCustomers().count
-
         #expect(actual == expected)
     }
 

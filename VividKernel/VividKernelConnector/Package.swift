@@ -54,6 +54,7 @@ let package = Package(
             name: "VividKernelConnectorTests",
             dependencies: [
                 "VividKernelConnector",
+                "VividKernelWebserviceLib",
                 .product(name: "Vapor", package: "vapor"),
             ],
             plugins: [.plugin(name: "SwiftLintBuildToolPlugin", package: "SwiftLintPlugins")]
