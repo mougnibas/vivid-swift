@@ -14,12 +14,12 @@ public protocol IKernelService: Sendable {
     ///
     /// - Parameters :
     ///   - customer: The customer to add.
-    func addCustomer(_ customer: Customer) async
+    func addCustomer(_ customer: Customer) async throws
 
     /// Create, then return a new customer.
     ///
     /// - Returns: A newly created customer.
-    func createNewCustomer() async -> Customer
+    func createNewCustomer() async throws -> Customer
 
     /// Get a customer, by id, (if any).
     ///
@@ -27,10 +27,10 @@ public protocol IKernelService: Sendable {
     ///  - id: Identifier of a customer
     ///
     /// - Returns The customer if identifier exist, nil otherwise.
-    func getCustomer(_ id: String) async -> Customer?
+    func getCustomer(_ id: String) async throws -> Customer?
 
     /// Get all customers.
     ///
     /// - Returns : All customers.
-    func getCustomers() async -> [Customer]
+    func getCustomers() async throws -> [Customer]
 }

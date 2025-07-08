@@ -44,7 +44,7 @@ public struct KernelServiceCustomerController: RouteCollection, Sendable {
         let customer: Customer = Customer(customerDTO.id, customerDTO.secret)
 
         // Add it.
-        await service.addCustomer(customer)
+        try await service.addCustomer(customer)
 
         // Return http status
         return .ok
@@ -53,7 +53,7 @@ public struct KernelServiceCustomerController: RouteCollection, Sendable {
     func postCustomer(req: Request) async throws -> CustomerDTO {
 
         // Create the customer
-        let newCustomer: Customer = await service.createNewCustomer()
+        let newCustomer: Customer = try await service.createNewCustomer()
 
         // Put the customer in Vapor Model.
         let customerDTO: CustomerDTO = CustomerDTO(id: newCustomer.id, secret: newCustomer.secret)
@@ -68,7 +68,7 @@ public struct KernelServiceCustomerController: RouteCollection, Sendable {
         let customerId: String = req.parameters.get("id")!
 
         // Get this customer, if any.
-        let customer: Customer? = await service.getCustomer(customerId)
+        let customer: Customer? = try await service.getCustomer(customerId)
 
         // Handle customer not found.
         guard customer != nil else {
@@ -85,7 +85,7 @@ public struct KernelServiceCustomerController: RouteCollection, Sendable {
     func getAllCustomers(req: Request) async throws -> [CustomerDTO] {
 
         // Get all customers.
-        let customers: [Customer] = await service.getCustomers()
+        let customers: [Customer] = try await service.getCustomers()
 
         // Put the customers in Vapor Model.
         var customerDTOs: [CustomerDTO] = []

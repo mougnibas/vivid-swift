@@ -11,96 +11,97 @@ import VividKernelContract
 /// Connector based implementation of kernel service.
 public actor KernelServiceConnector: IKernelService {
 
-    public func addCustomer(_ customer: Customer) async {
+    /// Base address to send requests to.
+    let baseAddress: String
 
-        do {
+    /// Port to send requests to.
+    let port: Int
 
-            let customerDTO: CustomerDTO = CustomerDTO(id: customer.id, secret: customer.secret)
-            let jsonData: Data = try JSONEncoder().encode(customerDTO)
-
-            let url = URL(string: "http://localhost:8080/customer/")!
-            var request = URLRequest(url: url)
-            request.httpMethod = "POST"
-            request.setValue( "application/json", forHTTPHeaderField: "Content-Type")
-            request.httpBody = jsonData
-
-            _ = try await URLSession.shared.data(for: request)
-        } catch {}
+    /// Initialize the actor.
+    ///
+    /// - Parameters :
+    ///  - baseAddress : Base address to send requests to.
+    ///  - port :Port to send requests to.
+    init(_ baseAddress: String, _ port: Int) {
+        self.baseAddress = baseAddress
+        self.port = port
     }
 
-    public func createNewCustomer() async -> Customer {
+    public func addCustomer(_ customer: Customer) async throws {
 
-        do {
+        let customerDTO: CustomerDTO = CustomerDTO(id: customer.id, secret: customer.secret)
+        let jsonData: Data = try JSONEncoder().encode(customerDTO)
 
-            let url = URL(string: "http://localhost:8080/customer/auto")!
-            var request = URLRequest(url: url)
-            request.httpMethod = "POST"
+        let url: URL = URL(string: baseAddress + ":" + String(port) + "/customer/")!
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
+        request.setValue( "application/json", forHTTPHeaderField: "Content-Type")
+        request.httpBody = jsonData
 
-            let (data, _) = try await URLSession.shared.data(for: request)
-
-            let json: Data = String(data: data, encoding: .utf8)!.data(using: .utf8)!
-            let customerDTO: CustomerDTO = try JSONDecoder().decode(CustomerDTO.self, from: json)
-
-            // Convert the DTO back to it's original form.
-            let customer: Customer = Customer(customerDTO.id, customerDTO.secret)
-
-            // Return the result.
-            return customer
-
-        } catch {
-            // TODO Add exception handling.
-            return Customer("todo", "TODO")
-        }
+        _ = try await URLSession.shared.data(for: request)
     }
 
-    public func getCustomer( _ id: String) async -> Customer? {
+    public func createNewCustomer() async throws -> Customer {
 
-        do {
+        let url: URL = URL(string: baseAddress + ":" + String(port) + "/customer/auto")!
+        var request = URLRequest(url: url)
+        request.httpMethod = "POST"
 
-            let url = URL(string: "http://localhost:8080/customer/" + id)!
-            var request = URLRequest(url: url)
-            request.httpMethod = "GET"
+        let (data, _) = try await URLSession.shared.data(for: request)
 
-            let (data, _) = try await URLSession.shared.data(for: request)
+        let json: Data = String(data: data, encoding: .utf8)!.data(using: .utf8)!
+        let customerDTO: CustomerDTO = try JSONDecoder().decode(CustomerDTO.self, from: json)
 
-            let json: Data = String(data: data, encoding: .utf8)!.data(using: .utf8)!
-            let customerDTO: CustomerDTO = try JSONDecoder().decode(CustomerDTO.self, from: json)
+        // Convert the DTO back to it's original form.
+        let customer: Customer = Customer(customerDTO.id, customerDTO.secret)
 
-            // Convert the DTO back to it's original form.
-            let customer: Customer = Customer(customerDTO.id, customerDTO.secret)
-
-            // Return the result.
-            return customer
-
-        } catch {
-            return nil
-        }
+        // Return the result.
+        return customer
     }
 
-    public func getCustomers() async -> [Customer] {
-        do {
+    public func getCustomer( _ id: String) async throws -> Customer? {
 
-            let url = URL(string: "http://localhost:8080/customer/")!
-            var request = URLRequest(url: url)
-            request.httpMethod = "GET"
+        let url: URL = URL(string: baseAddress + ":" + String(port) + "/customer/" + id)!
+        var request = URLRequest(url: url)
+        request.httpMethod = "GET"
 
-            let (data, _) = try await URLSession.shared.data(for: request)
+        let (data, response) = try await URLSession.shared.data(for: request)
 
-            let json: Data = String(data: data, encoding: .utf8)!.data(using: .utf8)!
-            let customerDTOs: [CustomerDTO] = try JSONDecoder().decode([CustomerDTO].self, from: json)
-
-            // Convert the DTOs back to it's original form.
-            // Put the customers in Vapor Model.
-            var customers: [Customer] = []
-            for customerDTO: CustomerDTO in customerDTOs {
-                customers.append(Customer(customerDTO.id, customerDTO.secret))
+        if let httpResponse: HTTPURLResponse = response as? HTTPURLResponse {
+            guard httpResponse.statusCode == 200 else {
+                return nil
             }
-
-            // Return the result.
-            return customers
-
-        } catch {
-            return []
         }
+
+        let json: Data = String(data: data, encoding: .utf8)!.data(using: .utf8)!
+        let customerDTO: CustomerDTO = try JSONDecoder().decode(CustomerDTO.self, from: json)
+
+        // Convert the DTO back to it's original form.
+        let customer: Customer = Customer(customerDTO.id, customerDTO.secret)
+
+        // Return the result.
+        return customer
+    }
+
+    public func getCustomers() async throws -> [Customer] {
+
+        let url: URL = URL(string: baseAddress + ":" + String(port) + "/customer/")!
+        var request = URLRequest(url: url)
+        request.httpMethod = "GET"
+
+        let (data, _) = try await URLSession.shared.data(for: request)
+
+        let json: Data = String(data: data, encoding: .utf8)!.data(using: .utf8)!
+        let customerDTOs: [CustomerDTO] = try JSONDecoder().decode([CustomerDTO].self, from: json)
+
+        // Convert the DTOs back to it's original form.
+        // Put the customers in Vapor Model.
+        var customers: [Customer] = []
+        for customerDTO: CustomerDTO in customerDTOs {
+            customers.append(Customer(customerDTO.id, customerDTO.secret))
+        }
+
+        // Return the result.
+        return customers
     }
 }

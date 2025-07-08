@@ -19,8 +19,8 @@ struct KernelServiceCustomerControllerTests {
 
     init() async throws {
         kernelService = InMemoryKernelServiceImpl()
-        await kernelService.addCustomer(Customer("my-id", "my-secret"))
-        await kernelService.addCustomer(Customer("my-id-2", "my-secret-2"))
+        try await kernelService.addCustomer(Customer("my-id", "my-secret"))
+        try await kernelService.addCustomer(Customer("my-id-2", "my-secret-2"))
     }
 
     @Test("Send POST to customer (with json) should return this new customer")
@@ -44,7 +44,7 @@ struct KernelServiceCustomerControllerTests {
                 afterResponse: { response async throws in
 
                 let actualStatus: HTTPResponseStatus = response.status
-                let actual: Customer? = await kernelService.getCustomer(expected.id)
+                let actual: Customer? = try await kernelService.getCustomer(expected.id)
 
                 // Assert.
                 #expect(actualStatus == expectedStatus)
@@ -58,7 +58,7 @@ struct KernelServiceCustomerControllerTests {
 
         // Arrange
         let expectedStatus: HTTPResponseStatus = .ok
-        let numberOfCustomersBefore: Int = await kernelService.getCustomers().count
+        let numberOfCustomersBefore: Int = try await kernelService.getCustomers().count
         let expectedNumberOfCustomersAfter: Int = numberOfCustomersBefore + 1
 
         // Act.
@@ -69,7 +69,7 @@ struct KernelServiceCustomerControllerTests {
             try await app.testing().test(.POST, "customer/auto", afterResponse: { response async throws in
 
                 let actualStatus: HTTPResponseStatus = response.status
-                let actualNumberOfCustomersAfter: Int = await kernelService.getCustomers().count
+                let actualNumberOfCustomersAfter: Int = try await kernelService.getCustomers().count
 
                 // Assert.
                 #expect(actualStatus == expectedStatus)
