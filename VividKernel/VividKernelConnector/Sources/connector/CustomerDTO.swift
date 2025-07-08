@@ -8,7 +8,7 @@
 import Foundation
 
 /// A representation of a customer.
-struct CustomerDTO: Equatable, Decodable {
+struct CustomerDTO: Equatable, Codable {
 
     /// Unique identifier of the customer.
     public let id: String
