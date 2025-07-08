@@ -14,8 +14,8 @@ import VividKernelWebserviceLib
 @testable import VividKernelConnector
 
 /// Unit tests of ``KernelServiceConnector`` class.
-@Suite("KernelServiceConnector unit test", .serialized)
-struct KernelServiceConnectorUnitTests {
+@Suite("KernelServiceConnector integration test", .serialized)
+struct KernelServiceConnectorIntegrationTests {
 
     // Internal service.
     let serviceInternal: IKernelService
