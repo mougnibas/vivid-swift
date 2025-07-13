@@ -1,4 +1,4 @@
-// swift-tools-version: 6.1.0
+// swift-tools-version: 6.1.2
 
 import PackageDescription
 
@@ -25,7 +25,7 @@ let package = Package(
     dependencies: [
 
         // Public dependencies.
-        .package(url: "https://github.com/SimplyDanny/SwiftLintPlugins", exact: "0.59.1"),
+        //.package(url: "https://github.com/SimplyDanny/SwiftLintPlugins", exact: "0.59.1"),
 
         // Private dependencies.
         .package(path: "../VividKernelContract"),
@@ -41,7 +41,7 @@ let package = Package(
             dependencies: [
                 "VividKernelContract"
             ],
-            plugins: [.plugin(name: "SwiftLintBuildToolPlugin", package: "SwiftLintPlugins")]
+            //plugins: [.plugin(name: "SwiftLintBuildToolPlugin", package: "SwiftLintPlugins")]
         ),
 
         // Test target, with only one dependency : The main package.
@@ -49,7 +49,7 @@ let package = Package(
         .testTarget(
             name: "VividKernelImplTests",
             dependencies: ["VividKernelImpl"],
-            plugins: [.plugin(name: "SwiftLintBuildToolPlugin", package: "SwiftLintPlugins")]
+            //plugins: [.plugin(name: "SwiftLintBuildToolPlugin", package: "SwiftLintPlugins")]
         ),
     ]
 )
