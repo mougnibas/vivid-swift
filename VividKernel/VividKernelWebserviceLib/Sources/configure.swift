@@ -8,7 +8,7 @@
 import Foundation
 import Vapor
 import VividKernelService
-import VividKernelImpl
+import VividKernelServiceImpl
 
 // configures your application
 public func configure(_ kernelService: any IKernelService, _ app: Application) async throws {

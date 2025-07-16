@@ -6,7 +6,7 @@
 // of this license document, but changing it is not allowed.
 
 import Foundation
-import VividKernelContract
+import VividKernelService
 
 /// Connector based implementation of kernel service.
 public actor KernelServiceConnector: IKernelService {

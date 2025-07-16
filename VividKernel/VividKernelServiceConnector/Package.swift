@@ -5,7 +5,7 @@ import PackageDescription
 let package = Package(
 
     // Name of the package.
-    name: "VividKernelConnector",
+    name: "VividKernelServiceConnector",
 
     // Can run only on this platform.
     // This "requirement" is actually only for SwiftLint.
@@ -16,8 +16,8 @@ let package = Package(
     // This is a library package.
     products: [
         .library(
-            name: "VividKernelConnector",
-            targets: ["VividKernelConnector"]
+            name: "VividKernelServiceConnector",
+            targets: ["VividKernelServiceConnector"]
         )
     ],
 
@@ -30,8 +30,8 @@ let package = Package(
 
         // Private dependencies.
         .package(path: "../VividKernelService"),
-        .package(path: "../VividKernelImpl"),
         .package(path: "../VividKernelWebserviceLib"),
+        .package(path: "../VividKernelDataAccessServiceInMemory"),
     ],
 
     // We have the following targets.
@@ -40,10 +40,9 @@ let package = Package(
         // Main target.
         // SwiftLint is used as plugin when the project is build.
         .target(
-            name: "VividKernelConnector",
+            name: "VividKernelServiceConnector",
             dependencies: [
                 "VividKernelService",
-                "VividKernelImpl",
             ],
             plugins: [.plugin(name: "SwiftLintBuildToolPlugin", package: "SwiftLintPlugins")]
         ),
@@ -51,10 +50,11 @@ let package = Package(
         // Test target, with only one dependency : The main package.
         // SwiftLint is used as plugin when the project is tested.
         .testTarget(
-            name: "VividKernelConnectorTests",
+            name: "VividKernelServiceConnectorTests",
             dependencies: [
-                "VividKernelConnector",
+                "VividKernelServiceConnector",
                 "VividKernelWebserviceLib",
+                "VividKernelDataAccessServiceInMemory",
                 .product(name: "Vapor", package: "vapor"),
             ],
             plugins: [.plugin(name: "SwiftLintBuildToolPlugin", package: "SwiftLintPlugins")]

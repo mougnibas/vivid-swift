@@ -8,10 +8,11 @@
 import Foundation
 import Testing
 import Vapor
-import VividKernelContract
-import VividKernelImpl
+import VividKernelService
+import VividKernelServiceImpl
+import VividKernelDataAccessServiceInMemory
 import VividKernelWebserviceLib
-@testable import VividKernelConnector
+@testable import VividKernelServiceConnector
 
 /// Unit tests of ``KernelServiceConnector`` class.
 @Suite("KernelServiceConnector integration test", .serialized)
@@ -28,7 +29,7 @@ struct KernelServiceConnectorIntegrationTests {
     init() async throws {
 
         // Create and populate the internal service.
-        serviceInternal = InMemoryKernelServiceImpl()
+        serviceInternal = KernelServiceImpl(DataAccessServiceInMemory())
         try await serviceInternal.addCustomer(Customer("my-id", "my-secret"))
         try await serviceInternal.addCustomer(Customer("my-id-2", "my-secret-2"))
 

@@ -8,7 +8,7 @@
 import Foundation
 import Vapor
 import VividKernelService
-import VividKernelImpl
+import VividKernelServiceImpl
 
 /// Kernel service about customers as a Vapor Controller.
 public struct KernelServiceCustomerController: RouteCollection, Sendable {

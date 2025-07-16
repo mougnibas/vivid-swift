@@ -9,7 +9,7 @@ import Foundation
 import Testing
 import VividKernelService
 import VividKernelDataAccessServiceInMemory
-@testable import VividKernelImpl
+@testable import VividKernelServiceImpl
 
 /// Unit tests of ``KernelServiceImpl`` class.
 @Suite("KernelServiceImpl unit test")

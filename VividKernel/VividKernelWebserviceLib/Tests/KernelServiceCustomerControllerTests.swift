@@ -7,7 +7,7 @@
 
 @testable import VividKernelWebserviceLib
 import VividKernelService
-import VividKernelImpl
+import VividKernelServiceImpl
 import VividKernelDataAccessServiceInMemory
 import VaporTesting
 import Testing

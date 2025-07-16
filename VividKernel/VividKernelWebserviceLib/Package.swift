@@ -30,7 +30,7 @@ let package = Package(
 
         // Private dependencies.
         .package(path: "../VividKernelService"),
-        .package(path: "../VividKernelImpl"),
+        .package(path: "../VividKernelServiceImpl"),
         .package(path: "../VividKernelDataAccessServiceInMemory"),
     ],
 
@@ -42,7 +42,7 @@ let package = Package(
             name: "VividKernelWebserviceLib",
             dependencies: [
                 "VividKernelService",
-                "VividKernelImpl",
+                "VividKernelServiceImpl",
                 .product(name: "Vapor", package: "vapor"),
             ],
             plugins: [.plugin(name: "SwiftLintBuildToolPlugin", package: "SwiftLintPlugins")],
