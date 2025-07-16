@@ -18,7 +18,7 @@ struct KernelServiceImplUnitTests {
     let service: InMemoryKernelServiceImpl
 
     init() async throws {
-        service = InMemoryKernelServiceImpl()
+        service = InMemoryKernelServiceImpl(InMemoryDataAccessServiceImpl())
         await service.addCustomer(Customer("my-id", "my-secret"))
         await service.addCustomer(Customer("my-id-2", "my-secret-2"))
     }
@@ -28,7 +28,7 @@ struct KernelServiceImplUnitTests {
 
         // Arrange, act and assert.
         #expect(throws: Never.self) {
-            InMemoryKernelServiceImpl()
+            InMemoryKernelServiceImpl(InMemoryDataAccessServiceImpl())
         }
     }
 

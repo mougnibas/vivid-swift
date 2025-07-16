@@ -11,13 +11,15 @@ import VividKernelContract
 /// In-memory kernel service implementation..
 public actor InMemoryKernelServiceImpl: IKernelService {
 
-    // Map of customers.
-    var customers: [String: Customer] = [:]
+    // Data service.
+    var data: IDataAccessService
 
-    public init () {}
+    init ( _ dataService: IDataAccessService) {
+        data = dataService
+    }
 
     public func addCustomer(_ customer: Customer) {
-        customers[customer.id] = customer
+        data.addCustomer(customer)
     }
 
     public func createNewCustomer() -> Customer {
@@ -27,31 +29,21 @@ public actor InMemoryKernelServiceImpl: IKernelService {
         let customerSecret: String = UUID().uuidString
         let customer: Customer = Customer(customerId, customerSecret)
 
-        // Add it to the in-memory map.
-        customers[customerId] = customer
+        // Add it to the data.
+        data.addCustomer(customer)
 
         // Return the result.
         return customer
     }
 
     public func getCustomer( _ id: String) -> Customer? {
-
-        // Try to find the customer.
-        let customer: Customer? = customers[id]
-
-        // If the customer is not found, return nil.
-        guard customer != nil else {
-            return nil
-        }
-
-        // Customer if found. Return it.
-        return customer
+        return data.getCustomer(id)
     }
 
     public func getCustomers() -> [Customer] {
 
-        // Create an array from map values.
-        var customersArray: [Customer] = Array(customers.values)
+        // Get the customers.
+        var customersArray: [Customer] = data.getCustomers()
 
         // Sort the customers, to retrieve them always in the same order.
         customersArray.sort { $0.id < $1.id }
