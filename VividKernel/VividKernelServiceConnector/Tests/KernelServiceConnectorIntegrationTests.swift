@@ -21,8 +21,6 @@ struct KernelServiceConnectorIntegrationTests {
     // Internal service.
     let serviceInternal: IKernelService
 
-    // Service to test.
-
     // Vapor Application.
     let app: Application
 
