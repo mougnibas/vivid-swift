@@ -7,8 +7,9 @@
 
 import Vapor
 import Logging
-import VividKernelContract
-import VividKernelImpl
+import VividKernelService
+import VividKernelServiceImpl
+import VividKernelDataAccessServiceInMemory
 import VividKernelWebserviceLib
 
 @main
@@ -20,7 +21,7 @@ enum Entrypoint {
         let app = try await Application.make(env)
 
         // Kernel service to use in the app.
-        let kernelService: any IKernelService = InMemoryKernelServiceImpl()
+        let kernelService: any IKernelService = KernelServiceImpl(DataAccessServiceInMemory())
 
         do {
             try await configure(kernelService, app)

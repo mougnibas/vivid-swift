@@ -8,7 +8,7 @@
 import Foundation
 
 /// A representation of a customer.
-public struct Customer: CustomStringConvertible, Equatable, Sendable {
+public struct Customer: CustomStringConvertible, Equatable, Sendable, Codable {
 
     /// Unique identifier of the customer.
     public let id: String

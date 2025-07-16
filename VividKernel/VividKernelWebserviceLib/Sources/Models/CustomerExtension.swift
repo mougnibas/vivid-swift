@@ -7,13 +7,7 @@
 
 import Foundation
 import Vapor
+import VividKernelService
 
-/// A representation of a customer.
-struct CustomerDTO: Content, Equatable {
-
-    /// Unique identifier of the customer.
-    public let id: String
-
-    /// Secret of the customer.
-    public let secret: String
-}
+/// Extension of ``Customer`` to be able to use it with Vapor without exposing more things than necessary.
+extension Customer: @retroactive Content {}

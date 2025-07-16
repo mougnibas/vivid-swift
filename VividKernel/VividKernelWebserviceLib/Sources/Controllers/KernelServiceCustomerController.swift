@@ -38,10 +38,7 @@ public struct KernelServiceCustomerController: RouteCollection, Sendable {
     func postCustomerWithJson(req: Request) async throws -> HTTPStatus {
 
         // Decode the json to get back the customer to create.
-        let customerDTO: CustomerDTO = try req.content.decode(CustomerDTO.self)
-
-        // Convert the DTO back to it's original form.
-        let customer: Customer = Customer(customerDTO.id, customerDTO.secret)
+        let customer: Customer = try req.content.decode(Customer.self)
 
         // Add it.
         try await service.addCustomer(customer)
@@ -50,19 +47,16 @@ public struct KernelServiceCustomerController: RouteCollection, Sendable {
         return .ok
     }
 
-    func postCustomer(req: Request) async throws -> CustomerDTO {
+    func postCustomer(req: Request) async throws -> Customer {
 
         // Create the customer
         let newCustomer: Customer = try await service.createNewCustomer()
 
-        // Put the customer in Vapor Model.
-        let customerDTO: CustomerDTO = CustomerDTO(id: newCustomer.id, secret: newCustomer.secret)
-
-        // Return the customer (Vapor Model).
-        return customerDTO
+        // Return the customer.
+        return newCustomer
     }
 
-    func getCustomer(req: Request) async throws -> CustomerDTO {
+    func getCustomer(req: Request) async throws -> Customer {
 
         // Get the customer ID from paramters.
         let customerId: String = req.parameters.get("id")!
@@ -75,25 +69,16 @@ public struct KernelServiceCustomerController: RouteCollection, Sendable {
             throw Abort(.notFound)
         }
 
-        // Put the customer in Vapor Model.
-        let customerDTO: CustomerDTO = CustomerDTO(id: customer!.id, secret: customer!.secret)
-
-        // Return the customer (Vapor Model).
-        return customerDTO
+        // Return the customer.
+        return customer!
     }
 
-    func getAllCustomers(req: Request) async throws -> [CustomerDTO] {
+    func getAllCustomers(req: Request) async throws -> [Customer] {
 
         // Get all customers.
         let customers: [Customer] = try await service.getCustomers()
 
-        // Put the customers in Vapor Model.
-        var customerDTOs: [CustomerDTO] = []
-        for customer: Customer in customers {
-            customerDTOs.append(CustomerDTO(id: customer.id, secret: customer.secret))
-        }
-
-        // Return the customers (Vapor Model).
-        return customerDTOs
+        // Return the customers.
+        return customers
     }
 }

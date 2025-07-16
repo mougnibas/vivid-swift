@@ -30,7 +30,7 @@ struct KernelServiceCustomerControllerTests {
         // Arrange
         let expectedStatus: HTTPResponseStatus = .ok
         let expected: Customer = Customer("my-id-3", "my-secret-3")
-        let json: Data = try JSONEncoder().encode(CustomerDTO(id: expected.id, secret: expected.secret))
+        let json: Data = try JSONEncoder().encode(Customer(expected.id, expected.secret))
 
         // Act.
         // swiftlint:disable multiple_closures_with_trailing_closure
@@ -105,7 +105,7 @@ struct KernelServiceCustomerControllerTests {
 
         // Arrange
         let expectedStatus: HTTPResponseStatus = .ok
-        let expectedContent: CustomerDTO = CustomerDTO(id: "my-id", secret: "my-secret")
+        let expectedContent: Customer = Customer("my-id", "my-secret")
 
         // Act.
         // swiftlint:disable multiple_closures_with_trailing_closure
@@ -117,7 +117,7 @@ struct KernelServiceCustomerControllerTests {
                 let actualStatus: HTTPResponseStatus = response.status
                 let json: String = response.body.string
                 let jsonData: Data? = json.data(using: .utf8)
-                let actualContent: CustomerDTO? = try JSONDecoder().decode(CustomerDTO.self, from: jsonData!)
+                let actualContent: Customer? = try JSONDecoder().decode(Customer.self, from: jsonData!)
 
                 // Assert.
                 #expect(actualStatus == expectedStatus)
@@ -131,7 +131,7 @@ struct KernelServiceCustomerControllerTests {
 
         // Arrange
         let expectedStatus: HTTPResponseStatus = .ok
-        let expectedContent: CustomerDTO = CustomerDTO(id: "my-id-2", secret: "my-secret-2")
+        let expectedContent: Customer = Customer("my-id-2", "my-secret-2")
 
         // Act.
         // swiftlint:disable multiple_closures_with_trailing_closure
@@ -143,7 +143,7 @@ struct KernelServiceCustomerControllerTests {
                 let actualStatus: HTTPResponseStatus = response.status
                 let json: String = response.body.string
                 let jsonData: Data? = json.data(using: .utf8)
-                let actualContent: CustomerDTO? = try JSONDecoder().decode(CustomerDTO.self, from: jsonData!)
+                let actualContent: Customer? = try JSONDecoder().decode(Customer.self, from: jsonData!)
 
                 // Assert.
                 #expect(actualStatus == expectedStatus)
@@ -157,9 +157,9 @@ struct KernelServiceCustomerControllerTests {
 
         // Arrange
         let expectedStatus: HTTPResponseStatus = .ok
-        let expectedContent: [CustomerDTO] = [
-            CustomerDTO(id: "my-id", secret: "my-secret"),
-            CustomerDTO(id: "my-id-2", secret: "my-secret-2")
+        let expectedContent: [Customer] = [
+            Customer("my-id", "my-secret"),
+            Customer("my-id-2", "my-secret-2")
         ]
 
         // Act.
@@ -172,7 +172,8 @@ struct KernelServiceCustomerControllerTests {
                 let actualStatus: HTTPResponseStatus = response.status
                 let json: String = response.body.string
                 let jsonData: Data? = json.data(using: .utf8)
-                let actualContent: [CustomerDTO]? = try JSONDecoder().decode([CustomerDTO].self, from: jsonData!)
+                let actualContent: [Customer]? = try JSONDecoder().decode(
+                    [Customer].self, from: jsonData!)
 
                 // Assert.
                 #expect(actualStatus == expectedStatus)
