@@ -28,7 +28,7 @@ let package = Package(
         .package(url: "https://github.com/SimplyDanny/SwiftLintPlugins", exact: "0.59.1"),
 
         // Private dependencies.
-        .package(path: "../VividKernelContract"),
+        .package(path: "../VividKernelService"),
         .package(path: "../VividKernelDataAccessService"),
         .package(path: "../VividKernelDataAccessServiceInMemory"),
     ],
@@ -41,7 +41,7 @@ let package = Package(
         .target(
             name: "VividKernelImpl",
             dependencies: [
-                "VividKernelContract",
+                "VividKernelService",
                 "VividKernelDataAccessService"
             ],
             plugins: [.plugin(name: "SwiftLintBuildToolPlugin", package: "SwiftLintPlugins")]

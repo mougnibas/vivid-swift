@@ -7,7 +7,7 @@
 
 import Foundation
 import Vapor
-import VividKernelContract
+import VividKernelService
 import VividKernelImpl
 
 // configures your application

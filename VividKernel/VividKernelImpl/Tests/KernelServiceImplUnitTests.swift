@@ -7,7 +7,7 @@
 
 import Foundation
 import Testing
-import VividKernelContract
+import VividKernelService
 import VividKernelDataAccessServiceInMemory
 @testable import VividKernelImpl
 

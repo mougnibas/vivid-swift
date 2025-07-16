@@ -6,7 +6,7 @@
 // of this license document, but changing it is not allowed.
 
 import Foundation
-import VividKernelContract
+import VividKernelService
 
 /// Service for accessing datas.
 public protocol IDataAccessService {
