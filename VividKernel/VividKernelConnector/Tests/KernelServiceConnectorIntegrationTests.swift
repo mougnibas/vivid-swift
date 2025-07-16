@@ -36,6 +36,8 @@ struct KernelServiceConnectorIntegrationTests {
         let env = try Environment.detect()
         app = try await Application.make(env)
         try app.register(collection: KernelServiceCustomerController(service: serviceInternal))
+        app.http.server.configuration.hostname = "0.0.0.0"
+        app.http.server.configuration.port = 50_000
         try await app.startup()
     }
 
@@ -48,7 +50,7 @@ struct KernelServiceConnectorIntegrationTests {
 
         // Arrange, act and assert.
         #expect(throws: Never.self) {
-            KernelServiceConnector("http://localhost", 8080)
+            KernelServiceConnector("http://localhost", 50_000)
         }
 
         // Stop vapor instance.
@@ -59,7 +61,7 @@ struct KernelServiceConnectorIntegrationTests {
     func addCustomerShouldThenGetCustomerShouldReturnThisCustomer() async throws {
 
         // Arrange.
-        let service: KernelServiceConnector = KernelServiceConnector("http://localhost", 8080)
+        let service: KernelServiceConnector = KernelServiceConnector("http://localhost", 50_000)
         let expected: Customer = Customer("my-id-3", "my-secret-3")
 
         // Act.
@@ -77,7 +79,7 @@ struct KernelServiceConnectorIntegrationTests {
     func addCustomerWithInvalidConnectorParametersShouldNotThrowException() async throws {
 
         // Arrange.
-        let service: KernelServiceConnector = KernelServiceConnector("http://localhosttttttt", 8080)
+        let service: KernelServiceConnector = KernelServiceConnector("http://localhosttttttt", 50_000)
         let expected: Customer = Customer("my-id-3", "my-secret-3")
 
         // Act and Assert.
@@ -93,7 +95,7 @@ struct KernelServiceConnectorIntegrationTests {
     func createNewCustomerShouldReturnOneMoreCustomer() async throws {
 
         // Arrange.
-        let service: KernelServiceConnector = KernelServiceConnector("http://localhost", 8080)
+        let service: KernelServiceConnector = KernelServiceConnector("http://localhost", 50_000)
         let numberOfCustomersBefore: Int = try await service.getCustomers().count
         let expected: Int = numberOfCustomersBefore + 1
 
@@ -112,7 +114,7 @@ struct KernelServiceConnectorIntegrationTests {
     func getCustomerByIdWithIdOneShouldReturnThisCustomer() async throws {
 
         // Arrange.
-        let service: KernelServiceConnector = KernelServiceConnector("http://localhost", 8080)
+        let service: KernelServiceConnector = KernelServiceConnector("http://localhost", 50_000)
         let expected: Customer = Customer("my-id", "my-secret")
 
         // Act.
@@ -129,7 +131,7 @@ struct KernelServiceConnectorIntegrationTests {
     func getCustomerByIdWithIdTwoShouldReturnThisCustomer() async throws {
 
         // Arrange.
-        let service: KernelServiceConnector = KernelServiceConnector("http://localhost", 8080)
+        let service: KernelServiceConnector = KernelServiceConnector("http://localhost", 50_000)
         let expected: Customer = Customer("my-id-2", "my-secret-2")
 
         // Act.
@@ -146,7 +148,7 @@ struct KernelServiceConnectorIntegrationTests {
     func getCustomerByIdWithIdThreeShouldReturnNil() async throws {
 
         // Arrange.
-        let service: KernelServiceConnector = KernelServiceConnector("http://localhost", 8080)
+        let service: KernelServiceConnector = KernelServiceConnector("http://localhost", 50_000)
         let expected: Customer? = nil
 
         // Act.
@@ -163,7 +165,7 @@ struct KernelServiceConnectorIntegrationTests {
     func getCustomersShouldReturnThisCustomers() async throws {
 
         // Arrange.
-        let service: KernelServiceConnector = KernelServiceConnector("http://localhost", 8080)
+        let service: KernelServiceConnector = KernelServiceConnector("http://localhost", 50_000)
         let expected: [Customer] = [
             Customer("my-id", "my-secret"),
             Customer("my-id-2", "my-secret-2")

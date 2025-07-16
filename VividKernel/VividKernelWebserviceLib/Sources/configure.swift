@@ -16,6 +16,12 @@ public func configure(_ kernelService: any IKernelService, _ app: Application) a
     // Register my controller.
     try app.register(collection: KernelServiceCustomerController(service: kernelService))
 
+    // Listening on any interface.
+    app.http.server.configuration.hostname = "0.0.0.0"
+
+    // Listening on this port.
+    app.http.server.configuration.port = 50_000
+
     // register routes.
     try routes(app)
 }

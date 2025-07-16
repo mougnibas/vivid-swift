@@ -25,7 +25,7 @@ let package = Package(
     dependencies: [
 
         // Public dependencies.
-        //.package(url: "https://github.com/SimplyDanny/SwiftLintPlugins", exact: "0.59.1"),
+        .package(url: "https://github.com/SimplyDanny/SwiftLintPlugins", exact: "0.59.1"),
         .package(url: "https://github.com/vapor/vapor.git", exact: "4.115.0"),
 
         // Private dependencies.
@@ -42,7 +42,7 @@ let package = Package(
                 "VividKernelWebserviceLib",
                 .product(name: "Vapor", package: "vapor"),
             ],
-            //plugins: [.plugin(name: "SwiftLintBuildToolPlugin", package: "SwiftLintPlugins")],
+            plugins: [.plugin(name: "SwiftLintBuildToolPlugin", package: "SwiftLintPlugins")],
         ),
     ]
 )

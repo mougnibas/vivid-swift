@@ -6,9 +6,19 @@
 ## of this license document, but changing it is not allowed.
 
 ##
+## Multi-stage Dockerfile.
+## First stage actually build the binary.
+## Second stage get the binary from first stage and add it to the base image.
+##
+
+##
+## First stage (build binary).
+##
+
+##
 ## Full swift image to build swift binaries.
 ##
-FROM swift:6.1.2-noble as builder
+FROM swift:6.1.2-noble AS builder
 
 ##
 ## Conventional path.
@@ -50,7 +60,7 @@ RUN     cd ./VividKernelContract/      && swift build --configuration release
 RUN     cd ./VividKernelImpl/          && swift package resolve
 RUN     cd ./VividKernelImpl/          && swift build --configuration  release
 
-# Build webservice library package. --verbose
+# Build webservice library package.
 RUN     cd ./VividKernelWebserviceLib/ && swift package resolve
 RUN     cd ./VividKernelWebserviceLib/ && swift build --configuration release
 
@@ -59,7 +69,26 @@ RUN     cd ./VividKernelWebserviceExe/ && swift package resolve
 RUN     cd ./VividKernelWebserviceExe/ && swift build --configuration release
 RUN     ls -lah /app/VividKernelWebserviceExe/.build/
 
+##
+## Second stage (add binary to base image).
+##
+
+##
+## "Slim" swift image to run the binary.
+##
 FROM swift:6.1.2-noble-slim
+
+##
+## Conventional path.
+##
 WORKDIR /app
+
+##
+## Copy the binary.
+##
 COPY --from=builder /app/VividKernelWebserviceExe/.build/aarch64-unknown-linux-gnu/release/VividKernelWebserviceExe .
+
+##
+## Run the binary.
+##
 CMD ["./VividKernelWebserviceExe"]
