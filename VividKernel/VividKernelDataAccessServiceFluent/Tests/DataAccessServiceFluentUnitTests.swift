@@ -7,6 +7,7 @@
 
 import Foundation
 import Testing
+import Vapor
 import VividKernelService
 import VividKernelDataAccessService
 @testable import VividKernelDataAccessServiceFluent
@@ -18,10 +19,22 @@ struct DataAccessServiceFluentUnitTests {
     // Service to test
     let service: DataAccessServiceFluent
 
+    // Vapor Application.
+    //let app: Application
+
     init() async throws {
+
         service = DataAccessServiceFluent()
         service.addCustomer(Customer("my-id", "my-secret"))
         service.addCustomer(Customer("my-id-2", "my-secret-2"))
+
+        // Run embeded Vapor server.
+        //let env = try Environment.detect()
+        //app = try await Application.make(env)
+        //try app.register(collection: KernelServiceCustomerController(service: serviceInternal))
+        //app.http.server.configuration.hostname = "0.0.0.0"
+        //app.http.server.configuration.port = 50_000
+        //try await app.startup()
     }
 
     @Test("'addCustomer' then 'getCustomer' should return this customer")
