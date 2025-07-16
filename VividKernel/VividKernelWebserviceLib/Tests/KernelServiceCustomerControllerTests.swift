@@ -8,6 +8,7 @@
 @testable import VividKernelWebserviceLib
 import VividKernelContract
 import VividKernelImpl
+import VividKernelDataAccessServiceInMemory
 import VaporTesting
 import Testing
 
@@ -18,7 +19,7 @@ struct KernelServiceCustomerControllerTests {
     let kernelService: any IKernelService
 
     init() async throws {
-        kernelService = InMemoryKernelServiceImpl()
+        kernelService = KernelServiceImpl(DataAccessServiceInMemory())
         try await kernelService.addCustomer(Customer("my-id", "my-secret"))
         try await kernelService.addCustomer(Customer("my-id-2", "my-secret-2"))
     }

@@ -7,9 +7,10 @@
 
 import Foundation
 import VividKernelContract
+import VividKernelDataAccessService
 
 /// In-memory data access service implementation..
-public class InMemoryDataAccessServiceImpl: IDataAccessService {
+public class DataAccessServiceInMemory: IDataAccessService {
 
     // Map of customers.
     var customers: [String: Customer] = [:]
@@ -35,6 +36,14 @@ public class InMemoryDataAccessServiceImpl: IDataAccessService {
     }
 
     public func getCustomers() -> [Customer] {
-        return Array(customers.values)
+
+        // Get the customers.
+        var customersArray: [Customer] = Array(customers.values)
+
+        // Sort the customers, to retrieve them always in the same order.
+        customersArray.sort { $0.id < $1.id }
+
+        // Return the result.
+        return customersArray
     }
 }

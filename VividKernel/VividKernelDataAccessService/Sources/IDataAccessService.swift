@@ -9,7 +9,7 @@ import Foundation
 import VividKernelContract
 
 /// Service for accessing datas.
-protocol IDataAccessService {
+public protocol IDataAccessService {
 
     /// Add a customer.
     ///

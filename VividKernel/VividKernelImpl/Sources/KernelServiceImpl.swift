@@ -7,6 +7,7 @@
 
 import Foundation
 import VividKernelContract
+import VividKernelDataAccessService
 
 /// Kernel service implementation..
 public actor KernelServiceImpl: IKernelService {
@@ -14,7 +15,7 @@ public actor KernelServiceImpl: IKernelService {
     // Data service.
     var data: IDataAccessService
 
-    init ( _ dataService: IDataAccessService) {
+    public init ( _ dataService: IDataAccessService) {
         data = dataService
     }
 
@@ -43,10 +44,7 @@ public actor KernelServiceImpl: IKernelService {
     public func getCustomers() -> [Customer] {
 
         // Get the customers.
-        var customersArray: [Customer] = data.getCustomers()
-
-        // Sort the customers, to retrieve them always in the same order.
-        customersArray.sort { $0.id < $1.id }
+        let customersArray: [Customer] = data.getCustomers()
 
         // Return the result.
         return customersArray
