@@ -26,6 +26,8 @@ let package = Package(
 
         // Public dependencies.
         .package(url: "https://github.com/SimplyDanny/SwiftLintPlugins", exact: "0.59.1"),
+        .package(url: "https://github.com/vapor/fluent.git", exact: "4.12.0"),
+        .package(url: "https://github.com/vapor/fluent-postgres-driver.git", exact: "2.10.1"),
         
         // Private dependencies.
         .package(path: "../VividKernelService"),
@@ -41,7 +43,8 @@ let package = Package(
             name: "VividKernelDataAccessServiceFluent",
             dependencies: [
                 "VividKernelService",
-                "VividKernelDataAccessService"
+                "VividKernelDataAccessService",
+                .product(name: "FluentPostgresDriver", package: "fluent-postgres-driver"),
             ],
             plugins: [.plugin(name: "SwiftLintBuildToolPlugin", package: "SwiftLintPlugins")]
         ),
