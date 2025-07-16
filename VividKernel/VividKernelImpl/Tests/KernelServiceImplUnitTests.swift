@@ -10,15 +10,15 @@ import Testing
 import VividKernelContract
 @testable import VividKernelImpl
 
-/// Unit tests of ``KernelServiceConnector`` class.
+/// Unit tests of ``KernelServiceImpl`` class.
 @Suite("KernelServiceImpl unit test")
 struct KernelServiceImplUnitTests {
 
     // Service to test
-    let service: InMemoryKernelServiceImpl
+    let service: KernelServiceImpl
 
     init() async throws {
-        service = InMemoryKernelServiceImpl(InMemoryDataAccessServiceImpl())
+        service = KernelServiceImpl(InMemoryDataAccessServiceImpl())
         await service.addCustomer(Customer("my-id", "my-secret"))
         await service.addCustomer(Customer("my-id-2", "my-secret-2"))
     }
@@ -28,7 +28,7 @@ struct KernelServiceImplUnitTests {
 
         // Arrange, act and assert.
         #expect(throws: Never.self) {
-            InMemoryKernelServiceImpl(InMemoryDataAccessServiceImpl())
+            KernelServiceImpl(InMemoryDataAccessServiceImpl())
         }
     }
 

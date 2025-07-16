@@ -8,8 +8,8 @@
 import Foundation
 import VividKernelContract
 
-/// In-memory kernel service implementation..
-public actor InMemoryKernelServiceImpl: IKernelService {
+/// Kernel service implementation..
+public actor KernelServiceImpl: IKernelService {
 
     // Data service.
     var data: IDataAccessService
