@@ -20,21 +20,21 @@ struct DataAccessServiceFluentUnitTests {
     let service: DataAccessServiceFluent
 
     // Vapor Application.
-    //let app: Application
+    let app: Application
 
     init() async throws {
 
-        service = DataAccessServiceFluent()
-        service.addCustomer(Customer("my-id", "my-secret"))
-        service.addCustomer(Customer("my-id-2", "my-secret-2"))
-
         // Run embeded Vapor server.
-        //let env = try Environment.detect()
-        //app = try await Application.make(env)
-        //try app.register(collection: KernelServiceCustomerController(service: serviceInternal))
-        //app.http.server.configuration.hostname = "0.0.0.0"
-        //app.http.server.configuration.port = 50_000
-        //try await app.startup()
+        let env = try Environment.detect()
+        app = try await Application.make(env)
+        app.http.server.configuration.hostname = "0.0.0.0"
+        app.http.server.configuration.port = 50_000
+        try await app.startup()
+
+        // Service to test.
+        service = DataAccessServiceFluent(app.db)
+        try await service.addCustomer(Customer("my-id", "my-secret"))
+        try await service.addCustomer(Customer("my-id-2", "my-secret-2"))
     }
 
     @Test("'addCustomer' then 'getCustomer' should return this customer")
