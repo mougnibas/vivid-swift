@@ -8,13 +8,15 @@
 import Foundation
 import Testing
 import Vapor
+import Fluent
+import FluentPostgresDriver
 import VividKernelService
 import VividKernelDataAccessService
 @testable import VividKernelDataAccessServiceFluent
 
-/// Unit tests of ``DataAccessServiceFluent`` class.
-@Suite("DataAccessServiceFluent unit test")
-struct DataAccessServiceFluentUnitTests {
+/// Integration tests of ``DataAccessServiceFluent`` class.
+@Suite("DataAccessServiceFluent integration test", .serialized)
+struct DataAccessServiceFluentIntegrationTests {
 
     // Service to test
     let service: DataAccessServiceFluent
@@ -24,17 +26,37 @@ struct DataAccessServiceFluentUnitTests {
 
     init() async throws {
 
+        // TODO Find a way to start (then to stop) a postgresql instance in docker.
+        // docker run --rm -it --name postgresql --hostname postgresql --env POSTGRES_PASSWORD=mysecretpassword --publish 5432:5432 postgres:17.5-bookworm
+
         // Run embeded Vapor server.
         let env = try Environment.detect()
         app = try await Application.make(env)
         app.http.server.configuration.hostname = "0.0.0.0"
         app.http.server.configuration.port = 50_000
+        app.databases.use(
+            .postgres(
+                configuration: .init(
+                    hostname: "localhost",
+                    username: "postgres",
+                    password: "mysecretpassword",
+                    database: "postgres",
+                    tls: .disable
+                )
+            ),
+            as: .psql
+        )
+        // TODO Add migrations.
         try await app.startup()
 
         // Service to test.
         service = DataAccessServiceFluent(app.db)
-        try await service.addCustomer(Customer("my-id", "my-secret"))
-        try await service.addCustomer(Customer("my-id-2", "my-secret-2"))
+        do {
+            try await service.addCustomer(Customer("my-id", "my-secret"))
+            try await service.addCustomer(Customer("my-id-2", "my-secret-2"))
+        } catch {
+            print(String(reflecting: error))
+        }
     }
 
     @Test("'addCustomer' then 'getCustomer' should return this customer")
