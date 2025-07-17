@@ -46,7 +46,8 @@ struct DataAccessServiceFluentIntegrationTests {
             ),
             as: .psql
         )
-        // TODO Add migrations.
+        app.migrations.add(Migration001())
+        try await app.autoMigrate()
         try await app.startup()
 
         // Service to test.
