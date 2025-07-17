@@ -14,17 +14,17 @@ public protocol IDataAccessService {
     /// Add a customer.
     ///
     /// - Parameter customer : The customer to add.
-    func addCustomer(_ customer: Customer)
+    func addCustomer(_ customer: Customer) async throws
 
     /// Get a customer by id.
     ///
     /// - Parameter id :The id of the customer.
     ///
     /// - Returns : The customer, of nil if not found.
-    func getCustomer( _ id: String) -> Customer?
+    func getCustomer( _ id: String) async throws -> Customer?
 
     /// Get all customers.
     ///
     /// - Returns : All customers (or empty array it there is no cutomers).
-    func getCustomers() -> [Customer]
+    func getCustomers() async throws -> [Customer]
 }

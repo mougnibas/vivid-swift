@@ -6,46 +6,65 @@
 // of this license document, but changing it is not allowed.
 
 import Foundation
+import Fluent
 import VividKernelService
 import VividKernelDataAccessService
 
 /// Fluent data access service implementation..
 public class DataAccessServiceFluent: IDataAccessService {
 
-    // TODO Write a real fluent based implementation.
+    /// Fluet database for persistence.
+    var database: Database
 
-    // Map of customers.
-    var customers: [String: Customer] = [:]
-
-    public init () {}
-
-    public func addCustomer(_ customer: Customer) {
-        customers[customer.id] = customer
+    /// Initialize the service.
+    /// - Parameter database : Fluent Database.
+    public init ( _ database: Database) {
+        self.database = database
     }
 
-    public func getCustomer( _ id: String) -> Customer? {
+    public func addCustomer(_ customer: Customer) async throws {
+
+        // Create a CustomerModel from Customer.
+        let model: CustomerModel = CustomerModel(customer.id, customer.secret)
+
+        // Save a new model to the databse.
+        _ = try await model.create(on: database)
+    }
+
+    public func getCustomer( _ id: String) async throws -> Customer? {
 
         // Try to find the customer.
-        let customer: Customer? = customers[id]
+        let model: CustomerModel? = try await CustomerModel.find(id, on: database)
 
         // If the customer is not found, return nil.
-        guard customer != nil else {
+        guard model != nil else {
             return nil
         }
+        let foundedModel: CustomerModel = model!
+
+        // Create a customer from CustomerModel.
+        let customer: Customer = Customer(foundedModel.id!, foundedModel.secret)
 
         // Customer if found. Return it.
         return customer
     }
 
-    public func getCustomers() -> [Customer] {
+    public func getCustomers() async throws -> [Customer] {
 
-        // Get the customers.
-        var customersArray: [Customer] = Array(customers.values)
+        // Get the customer models.
+        let models: [CustomerModel] = try await CustomerModel.query(on: database).all()
+
+        // Create the customers.
+        var customers: [Customer] = []
+        for model: CustomerModel in models {
+            let customer: Customer = Customer(model.id!, model.secret)
+            customers.append(customer)
+        }
 
         // Sort the customers, to retrieve them always in the same order.
-        customersArray.sort { $0.id < $1.id }
+        customers.sort { $0.id < $1.id }
 
         // Return the result.
-        return customersArray
+        return customers
     }
 }

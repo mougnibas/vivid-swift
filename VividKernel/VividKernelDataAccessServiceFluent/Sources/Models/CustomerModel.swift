@@ -12,19 +12,32 @@ import VividKernelService
 /// Extension of ``Customer`` to be able to use it with Vapor without exposing more things than necessary.
 final class CustomerModel: Model, @unchecked Sendable {
 
+    // Name of table this model represent.
     static let schema = "customers"
 
-    // Unique identifier for this Customer.
+    // Unique ID of the customer (also works for Model).
     @ID(custom: "id", generatedBy: .user)
-    public var id: String?
+    var id: String?
 
     /// Secret of the customer.
-    public var secret: String
+    @Field(key: "secret")
+    var secret: String
 
-    /// Initialize the customer.
+    // When this Customer was created.
+    @Timestamp(key: "created_at", on: .create)
+    var createdAt: Date?
+
+    // When this Customer was last updated.
+    @Timestamp(key: "updated_at", on: .update)
+    var updatedAt: Date?
+
+    // When this Customer was last updated.
+    @Timestamp(key: "deleted_at", on: .delete)
+    var deletedAt: Date?
+
+    /// Empty analyzer for fluent.
     public init() {
         secret = ""
-        id = nil
     }
 
     /// Initialize the customer.

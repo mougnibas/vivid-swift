@@ -44,8 +44,8 @@ struct DataAccessServiceFluentUnitTests {
         let expected: Customer = Customer("my-id-3", "my-secret-3")
 
         // Act.
-        service.addCustomer(expected)
-        let actual: Customer? = service.getCustomer(expected.id)
+        try await service.addCustomer(expected)
+        let actual: Customer? = try await service.getCustomer(expected.id)
 
         // Assert.
         #expect(actual == expected)
@@ -58,7 +58,7 @@ struct DataAccessServiceFluentUnitTests {
         let expected: Customer = Customer("my-id", "my-secret")
 
         // Act.
-        let actual: Customer? = service.getCustomer("my-id")
+        let actual: Customer? = try await service.getCustomer("my-id")
 
         // Assert
         #expect(actual == expected)
@@ -71,7 +71,7 @@ struct DataAccessServiceFluentUnitTests {
         let expected: Customer = Customer("my-id-2", "my-secret-2")
 
         // Act.
-        let actual: Customer? = service.getCustomer("my-id-2")
+        let actual: Customer? = try await service.getCustomer("my-id-2")
 
         // Assert
         #expect(actual == expected)
@@ -84,7 +84,7 @@ struct DataAccessServiceFluentUnitTests {
         let expected: Customer? = nil
 
         // Act.
-        let actual: Customer? = service.getCustomer("my-id-3")
+        let actual: Customer? = try await service.getCustomer("my-id-3")
 
         // Assert
         #expect(actual == expected)
@@ -100,7 +100,7 @@ struct DataAccessServiceFluentUnitTests {
         ]
 
         // Act.
-        let actual: [Customer] = service.getCustomers()
+        let actual: [Customer] = try await service.getCustomers()
 
         // Assert
         #expect(actual == expected)
