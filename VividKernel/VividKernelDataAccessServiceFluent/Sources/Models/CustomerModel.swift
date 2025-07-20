@@ -23,18 +23,6 @@ final class CustomerModel: Model, @unchecked Sendable {
     @Field(key: "secret")
     var secret: String
 
-    // When this Customer was created.
-    @Timestamp(key: "created_at", on: .create)
-    var createdAt: Date?
-
-    // When this Customer was last updated.
-    @Timestamp(key: "updated_at", on: .update)
-    var updatedAt: Date?
-
-    // When this Customer was last updated.
-    @Timestamp(key: "deleted_at", on: .delete)
-    var deletedAt: Date?
-
     /// Empty analyzer for fluent.
     public init() {
         secret = ""

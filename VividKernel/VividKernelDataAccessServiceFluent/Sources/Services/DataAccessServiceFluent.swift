@@ -11,7 +11,7 @@ import VividKernelService
 import VividKernelDataAccessService
 
 /// Fluent data access service implementation..
-public class DataAccessServiceFluent: IDataAccessService {
+public actor DataAccessServiceFluent: IDataAccessService {
 
     /// Fluet database for persistence.
     var database: Database

@@ -9,16 +9,18 @@ import Foundation
 import Fluent
 
 /// Fluent Migration #001.
-struct Migration001: AsyncMigration {
+public struct Migration001: AsyncMigration {
 
-    func prepare(on database: Database) async throws {
+    public init() {}
+
+    public func prepare(on database: Database) async throws {
         try await database.schema(CustomerModel.schema)
-            .id()
-            .field("name", .string)
+            .field("id", .string, .identifier(auto: false))
+            .field("secret", .string)
             .create()
     }
 
-    func revert(on database: Database) async throws {
+    public func revert(on database: Database) async throws {
         try await database.schema(CustomerModel.schema).delete()
     }
 }
