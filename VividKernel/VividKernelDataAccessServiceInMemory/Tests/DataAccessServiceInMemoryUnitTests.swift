@@ -20,8 +20,8 @@ struct DataAccessServiceInMemoryUnitTests {
 
     init() async throws {
         service = DataAccessServiceInMemory()
-        service.addCustomer(Customer("my-id", "my-secret"))
-        service.addCustomer(Customer("my-id-2", "my-secret-2"))
+        await service.addCustomer(Customer("my-id", "my-secret"))
+        await service.addCustomer(Customer("my-id-2", "my-secret-2"))
     }
 
     @Test("'addCustomer' then 'getCustomer' should return this customer")
@@ -31,8 +31,8 @@ struct DataAccessServiceInMemoryUnitTests {
         let expected: Customer = Customer("my-id-3", "my-secret-3")
 
         // Act.
-        service.addCustomer(expected)
-        let actual: Customer? = service.getCustomer(expected.id)
+        await service.addCustomer(expected)
+        let actual: Customer? = await service.getCustomer(expected.id)
 
         // Assert.
         #expect(actual == expected)
@@ -45,7 +45,7 @@ struct DataAccessServiceInMemoryUnitTests {
         let expected: Customer = Customer("my-id", "my-secret")
 
         // Act.
-        let actual: Customer? = service.getCustomer("my-id")
+        let actual: Customer? = await service.getCustomer("my-id")
 
         // Assert
         #expect(actual == expected)
@@ -58,7 +58,7 @@ struct DataAccessServiceInMemoryUnitTests {
         let expected: Customer = Customer("my-id-2", "my-secret-2")
 
         // Act.
-        let actual: Customer? = service.getCustomer("my-id-2")
+        let actual: Customer? = await service.getCustomer("my-id-2")
 
         // Assert
         #expect(actual == expected)
@@ -71,7 +71,7 @@ struct DataAccessServiceInMemoryUnitTests {
         let expected: Customer? = nil
 
         // Act.
-        let actual: Customer? = service.getCustomer("my-id-3")
+        let actual: Customer? = await service.getCustomer("my-id-3")
 
         // Assert
         #expect(actual == expected)
@@ -87,7 +87,7 @@ struct DataAccessServiceInMemoryUnitTests {
         ]
 
         // Act.
-        let actual: [Customer] = service.getCustomers()
+        let actual: [Customer] = await service.getCustomers()
 
         // Assert
         #expect(actual == expected)

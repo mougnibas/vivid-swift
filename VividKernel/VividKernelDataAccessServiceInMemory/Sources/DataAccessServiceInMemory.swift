@@ -10,7 +10,7 @@ import VividKernelService
 import VividKernelDataAccessService
 
 /// In-memory data access service implementation..
-public class DataAccessServiceInMemory: IDataAccessService {
+public actor DataAccessServiceInMemory: IDataAccessService {
 
     // Map of customers.
     var customers: [String: Customer] = [:]

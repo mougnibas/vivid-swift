@@ -9,7 +9,7 @@ import Foundation
 import VividKernelService
 
 /// Service for accessing datas.
-public protocol IDataAccessService {
+public protocol IDataAccessService: Sendable {
 
     /// Add a customer.
     ///

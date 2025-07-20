@@ -20,8 +20,8 @@ struct KernelServiceImplUnitTests {
 
     init() async throws {
         service = KernelServiceImpl(DataAccessServiceInMemory())
-        await service.addCustomer(Customer("my-id", "my-secret"))
-        await service.addCustomer(Customer("my-id-2", "my-secret-2"))
+        try await service.addCustomer(Customer("my-id", "my-secret"))
+        try await service.addCustomer(Customer("my-id-2", "my-secret-2"))
     }
 
     @Test("Default constructor should not throw exception")
@@ -40,8 +40,8 @@ struct KernelServiceImplUnitTests {
         let expected: Customer = Customer("my-id-3", "my-secret-3")
 
         // Act.
-        await service.addCustomer(expected)
-        let actual: Customer? = await service.getCustomer(expected.id)
+        try await service.addCustomer(expected)
+        let actual: Customer? = try await service.getCustomer(expected.id)
 
         // Assert.
         #expect(actual == expected)
@@ -51,14 +51,14 @@ struct KernelServiceImplUnitTests {
     func createNewCustomerShouldReturnAnotherCustomer() async throws {
 
         // Arrange.
-        let numberOfCustomersBefore: Int = await service.getCustomers().count
+        let numberOfCustomersBefore: Int = try await service.getCustomers().count
         let expected: Int = numberOfCustomersBefore + 1
 
         // Act.
-        _ = await service.createNewCustomer()
+        _ = try await service.createNewCustomer()
 
         // Assert.
-        let actual: Int = await service.getCustomers().count
+        let actual: Int = try await service.getCustomers().count
 
         #expect(actual == expected)
     }
@@ -70,7 +70,7 @@ struct KernelServiceImplUnitTests {
         let expected: Customer = Customer("my-id", "my-secret")
 
         // Act.
-        let actual: Customer? = await service.getCustomer("my-id")
+        let actual: Customer? = try await service.getCustomer("my-id")
 
         // Assert
         #expect(actual == expected)
@@ -83,7 +83,7 @@ struct KernelServiceImplUnitTests {
         let expected: Customer = Customer("my-id-2", "my-secret-2")
 
         // Act.
-        let actual: Customer? = await service.getCustomer("my-id-2")
+        let actual: Customer? = try await service.getCustomer("my-id-2")
 
         // Assert
         #expect(actual == expected)
@@ -96,7 +96,7 @@ struct KernelServiceImplUnitTests {
         let expected: Customer? = nil
 
         // Act.
-        let actual: Customer? = await service.getCustomer("my-id-3")
+        let actual: Customer? = try await service.getCustomer("my-id-3")
 
         // Assert
         #expect(actual == expected)
@@ -112,7 +112,7 @@ struct KernelServiceImplUnitTests {
         ]
 
         // Act.
-        let actual: [Customer] = await service.getCustomers()
+        let actual: [Customer] = try await service.getCustomers()
 
         // Assert
         #expect(actual == expected)

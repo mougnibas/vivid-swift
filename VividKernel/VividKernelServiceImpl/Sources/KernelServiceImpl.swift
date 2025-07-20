@@ -19,11 +19,11 @@ public actor KernelServiceImpl: IKernelService {
         data = dataService
     }
 
-    public func addCustomer(_ customer: Customer) {
-        data.addCustomer(customer)
+    public func addCustomer(_ customer: Customer) async throws {
+        try await data.addCustomer(customer)
     }
 
-    public func createNewCustomer() -> Customer {
+    public func createNewCustomer() async throws -> Customer {
 
         // Create a new customer.
         let customerId: String = UUID().uuidString
@@ -31,20 +31,20 @@ public actor KernelServiceImpl: IKernelService {
         let customer: Customer = Customer(customerId, customerSecret)
 
         // Add it to the data.
-        data.addCustomer(customer)
+        try await data.addCustomer(customer)
 
         // Return the result.
         return customer
     }
 
-    public func getCustomer( _ id: String) -> Customer? {
-        return data.getCustomer(id)
+    public func getCustomer( _ id: String) async throws -> Customer? {
+        return try await data.getCustomer(id)
     }
 
-    public func getCustomers() -> [Customer] {
+    public func getCustomers() async throws -> [Customer] {
 
         // Get the customers.
-        let customersArray: [Customer] = data.getCustomers()
+        let customersArray: [Customer] = try await data.getCustomers()
 
         // Return the result.
         return customersArray
