@@ -60,6 +60,10 @@ struct DataAccessServiceFluentIntegrationTests {
         }
     }
 
+    func vaporStop() async throws {
+        try await app.asyncShutdown()
+    }
+
     @Test("'addCustomer' then 'getCustomer' should return this customer")
     func addCustomerShouldThenGetCustomerShouldReturnThisCustomer() async throws {
 
@@ -72,6 +76,9 @@ struct DataAccessServiceFluentIntegrationTests {
 
         // Assert.
         #expect(actual == expected)
+
+        // Stop vapor instance.
+        try await vaporStop()
     }
 
     @Test("get customer by id with 'my-id' should return this customer")
@@ -85,6 +92,9 @@ struct DataAccessServiceFluentIntegrationTests {
 
         // Assert
         #expect(actual == expected)
+
+        // Stop vapor instance.
+        try await vaporStop()
     }
 
     @Test("get customer by id with 'my-id-2' should return this customer")
@@ -98,6 +108,9 @@ struct DataAccessServiceFluentIntegrationTests {
 
         // Assert
         #expect(actual == expected)
+
+        // Stop vapor instance.
+        try await vaporStop()
     }
 
     @Test("get customer by id with 'my-id-3' should return nil")
@@ -111,6 +124,9 @@ struct DataAccessServiceFluentIntegrationTests {
 
         // Assert
         #expect(actual == expected)
+
+        // Stop vapor instance.
+        try await vaporStop()
     }
 
     @Test("get all customers should return all customers")
@@ -127,5 +143,8 @@ struct DataAccessServiceFluentIntegrationTests {
 
         // Assert
         #expect(actual == expected)
+
+        // Stop vapor instance.
+        try await vaporStop()
     }
 }
