@@ -26,8 +26,26 @@ struct DataAccessServiceFluentIntegrationTests {
 
     init() async throws {
 
-        // TODO Find a way to start (then to stop) a postgresql instance in docker.
-        // docker run --rm -it --name postgresql --hostname postgresql --env POSTGRES_PASSWORD=mysecretpassword --publish 5432:5432 postgres:17.5-bookworm
+        // Start a docker container running a postgresql instance.
+        let process = Process()
+        process.executableURL = URL(fileURLWithPath: "/usr/local/bin/docker")
+        process.arguments = [
+            "run", "--rm", "--detach",
+            "--name", "postgresql-test",
+            "--hostname", "postgresql-test",
+            "--env", "POSTGRES_PASSWORD=mysecretpassword",
+            "--publish", "5432:5432",
+            "postgres:17.5-bookworm"
+        ]
+        try process.run()
+        process.waitUntilExit()
+        if process.terminationStatus != 0 {
+            throw NSError(domain: "DockerStartFailed", code: Int(process.terminationStatus))
+        }
+
+        // TODO Find a better way to do this (healthcheck maybe).
+        // Wait for 1s for the container to be ready.
+        try await Task.sleep(for: .seconds(1))
 
         // Run embeded Vapor server.
         let env = try Environment.detect()
@@ -64,6 +82,19 @@ struct DataAccessServiceFluentIntegrationTests {
         try await app.asyncShutdown()
     }
 
+    func dockerStop() async throws {
+        let process = Process()
+        process.executableURL = URL(fileURLWithPath: "/usr/local/bin/docker")
+        process.arguments = [
+            "container", "stop", "postgresql-test"
+        ]
+        try process.run()
+        process.waitUntilExit()
+        if process.terminationStatus != 0 {
+            throw NSError(domain: "DockerStartFailed", code: Int(process.terminationStatus))
+        }
+    }
+
     @Test("'addCustomer' then 'getCustomer' should return this customer")
     func addCustomerShouldThenGetCustomerShouldReturnThisCustomer() async throws {
 
@@ -79,6 +110,9 @@ struct DataAccessServiceFluentIntegrationTests {
 
         // Stop vapor instance.
         try await vaporStop()
+
+        // Stop docker instance.
+        try await dockerStop()
     }
 
     @Test("get customer by id with 'my-id' should return this customer")
@@ -95,6 +129,9 @@ struct DataAccessServiceFluentIntegrationTests {
 
         // Stop vapor instance.
         try await vaporStop()
+
+        // Stop docker instance.
+        try await dockerStop()
     }
 
     @Test("get customer by id with 'my-id-2' should return this customer")
@@ -111,6 +148,9 @@ struct DataAccessServiceFluentIntegrationTests {
 
         // Stop vapor instance.
         try await vaporStop()
+
+        // Stop docker instance.
+        try await dockerStop()
     }
 
     @Test("get customer by id with 'my-id-3' should return nil")
@@ -127,6 +167,9 @@ struct DataAccessServiceFluentIntegrationTests {
 
         // Stop vapor instance.
         try await vaporStop()
+
+        // Stop docker instance.
+        try await dockerStop()
     }
 
     @Test("get all customers should return all customers")
@@ -146,5 +189,8 @@ struct DataAccessServiceFluentIntegrationTests {
 
         // Stop vapor instance.
         try await vaporStop()
+
+        // Stop docker instance.
+        try await dockerStop()
     }
 }
