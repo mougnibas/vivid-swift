@@ -19,7 +19,7 @@ import VividKernelWebserviceLib
 struct KernelServiceConnectorInMemoryTests {
 
     // Random port used by vapor for the current test method to run.
-    let randomPort: Int
+    let vaporRandomPort: Int
 
     // Internal service.
     let serviceInternal: IKernelService
@@ -30,7 +30,7 @@ struct KernelServiceConnectorInMemoryTests {
     init() async throws {
 
         // Random port.
-        randomPort = Int.random(in: 1024...0xFFFF)
+        vaporRandomPort = Int.random(in: 1024...65_535)
 
         // Create and populate the internal service.
         serviceInternal = KernelServiceImpl(DataAccessServiceInMemory())
@@ -42,7 +42,7 @@ struct KernelServiceConnectorInMemoryTests {
         app = try await Application.make(env)
         try app.register(collection: CustomerController(service: serviceInternal))
         app.http.server.configuration.hostname = "0.0.0.0"
-        app.http.server.configuration.port = randomPort
+        app.http.server.configuration.port = vaporRandomPort
         try await app.startup()
     }
 
@@ -55,7 +55,7 @@ struct KernelServiceConnectorInMemoryTests {
 
         // Arrange, act and assert.
         #expect(throws: Never.self) {
-            KernelServiceConnector("http://localhost", randomPort)
+            KernelServiceConnector("http://localhost", vaporRandomPort)
         }
 
         // Stop vapor instance.
@@ -66,7 +66,7 @@ struct KernelServiceConnectorInMemoryTests {
     func addCustomerShouldThenGetCustomerShouldReturnThisCustomer() async throws {
 
         // Arrange.
-        let service: KernelServiceConnector = KernelServiceConnector("http://localhost", randomPort)
+        let service: KernelServiceConnector = KernelServiceConnector("http://localhost", vaporRandomPort)
         let expected: Customer = Customer("my-id-3", "my-secret-3")
 
         // Act.
@@ -84,7 +84,7 @@ struct KernelServiceConnectorInMemoryTests {
     func addCustomerWithInvalidConnectorParametersShouldNotThrowException() async throws {
 
         // Arrange.
-        let service: KernelServiceConnector = KernelServiceConnector("http://localhosttttttt", randomPort)
+        let service: KernelServiceConnector = KernelServiceConnector("http://localhosttttttt", vaporRandomPort)
         let expected: Customer = Customer("my-id-3", "my-secret-3")
 
         // Act and Assert.
@@ -100,7 +100,7 @@ struct KernelServiceConnectorInMemoryTests {
     func createNewCustomerShouldReturnOneMoreCustomer() async throws {
 
         // Arrange.
-        let service: KernelServiceConnector = KernelServiceConnector("http://localhost", randomPort)
+        let service: KernelServiceConnector = KernelServiceConnector("http://localhost", vaporRandomPort)
         let numberOfCustomersBefore: Int = try await service.getCustomers().count
         let expected: Int = numberOfCustomersBefore + 1
 
@@ -119,7 +119,7 @@ struct KernelServiceConnectorInMemoryTests {
     func getCustomerByIdWithIdOneShouldReturnThisCustomer() async throws {
 
         // Arrange.
-        let service: KernelServiceConnector = KernelServiceConnector("http://localhost", randomPort)
+        let service: KernelServiceConnector = KernelServiceConnector("http://localhost", vaporRandomPort)
         let expected: Customer = Customer("my-id", "my-secret")
 
         // Act.
@@ -136,7 +136,7 @@ struct KernelServiceConnectorInMemoryTests {
     func getCustomerByIdWithIdTwoShouldReturnThisCustomer() async throws {
 
         // Arrange.
-        let service: KernelServiceConnector = KernelServiceConnector("http://localhost", randomPort)
+        let service: KernelServiceConnector = KernelServiceConnector("http://localhost", vaporRandomPort)
         let expected: Customer = Customer("my-id-2", "my-secret-2")
 
         // Act.
@@ -153,7 +153,7 @@ struct KernelServiceConnectorInMemoryTests {
     func getCustomerByIdWithIdThreeShouldReturnNil() async throws {
 
         // Arrange.
-        let service: KernelServiceConnector = KernelServiceConnector("http://localhost", randomPort)
+        let service: KernelServiceConnector = KernelServiceConnector("http://localhost", vaporRandomPort)
         let expected: Customer? = nil
 
         // Act.
@@ -170,7 +170,7 @@ struct KernelServiceConnectorInMemoryTests {
     func getCustomersShouldReturnThisCustomers() async throws {
 
         // Arrange.
-        let service: KernelServiceConnector = KernelServiceConnector("http://localhost", randomPort)
+        let service: KernelServiceConnector = KernelServiceConnector("http://localhost", vaporRandomPort)
         let expected: [Customer] = [
             Customer("my-id", "my-secret"),
             Customer("my-id-2", "my-secret-2")
