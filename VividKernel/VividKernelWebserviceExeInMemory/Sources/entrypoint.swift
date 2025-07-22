@@ -7,10 +7,6 @@
 
 import Vapor
 import Logging
-import VividKernelService
-import VividKernelServiceImpl
-import VividKernelDataAccessService
-import VividKernelDataAccessServiceInMemory
 import VividKernelWebserviceLib
 
 @main
@@ -28,14 +24,8 @@ enum Entrypoint {
 
         do {
 
-            // We instantiate the data service implementation and kernel service implementation.
-            // We explicitly use the InMemory implementation of DataAccessService.
-            // We explicitly use the default implementation of KernelService.
-            let dataAccessService: IDataAccessService = DataAccessServiceInMemory()
-            let kernelService: any IKernelService = KernelServiceImpl(dataAccessService)
-
             // Configure the application using the provided configure method.
-            try await configure(kernelService, app)
+            try await configureWithInMemory(app)
 
             // Let start the application.
             try await app.execute()

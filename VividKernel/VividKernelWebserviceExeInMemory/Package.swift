@@ -5,7 +5,7 @@ import PackageDescription
 let package = Package(
 
     // Name of the package.
-    name: "VividKernelWebserviceExe",
+    name: "VividKernelWebserviceExeInMemory",
 
     // Can run only on this platform.
     // This "requirement" is for SwiftLint and Vapor.
@@ -16,8 +16,8 @@ let package = Package(
     // This is an executable package.
     products: [
         .executable(
-            name: "VividKernelWebserviceExe",
-            targets: ["VividKernelWebserviceExe"]
+            name: "VividKernelWebserviceExeInMemory",
+            targets: ["VividKernelWebserviceExeInMemory"]
         )
     ],
 
@@ -30,7 +30,6 @@ let package = Package(
 
         // Private dependencies.
         .package(path: "../VividKernelWebserviceLib"),
-        .package(path: "../VividKernelDataAccessServiceInMemory"),
     ],
 
     // We have the following targets.
@@ -38,10 +37,9 @@ let package = Package(
 
         // Executable main target.
         .executableTarget(
-            name: "VividKernelWebserviceExe",
+            name: "VividKernelWebserviceExeInMemory",
             dependencies: [
                 "VividKernelWebserviceLib",
-                "VividKernelDataAccessServiceInMemory",
                 .product(name: "Vapor", package: "vapor"),
             ],
             plugins: [.plugin(name: "SwiftLintBuildToolPlugin", package: "SwiftLintPlugins")],

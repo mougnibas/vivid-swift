@@ -11,7 +11,7 @@ import VividKernelService
 import VividKernelServiceImpl
 
 /// Kernel service about customers as a Vapor Controller.
-public struct KernelServiceCustomerController: RouteCollection, Sendable {
+public struct CustomerController: RouteCollection, Sendable {
 
     // Service to use.
     let service: any IKernelService

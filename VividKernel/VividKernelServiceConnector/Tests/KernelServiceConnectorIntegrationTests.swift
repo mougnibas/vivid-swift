@@ -34,7 +34,7 @@ struct KernelServiceConnectorIntegrationTests {
         // Run embeded Vapor server.
         let env = try Environment.detect()
         app = try await Application.make(env)
-        try app.register(collection: KernelServiceCustomerController(service: serviceInternal))
+        try app.register(collection: CustomerController(service: serviceInternal))
         app.http.server.configuration.hostname = "0.0.0.0"
         app.http.server.configuration.port = 50_000
         try await app.startup()
