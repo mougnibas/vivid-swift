@@ -15,8 +15,17 @@ import VividKernelDataAccessService
 @testable import VividKernelDataAccessServiceFluent
 
 /// Integration tests of ``DataAccessServiceFluent`` class.
-@Suite("DataAccessServiceFluent integration test", .serialized)
+@Suite("DataAccessServiceFluent integration test")
 struct DataAccessServiceFluentIntegrationTests {
+
+    // Random port used by vapor for the current test method to run.
+    let vaporRandomPort: Int
+
+    // Random port used by docker for postgresql container for the current test method to run.
+    let postgresqlRandomPort: Int
+
+    // Random name used by docker for postgresql container for the current test method to run.
+    let postgresqlRandomName: String
 
     // Service to test
     let service: DataAccessServiceFluent
@@ -26,15 +35,20 @@ struct DataAccessServiceFluentIntegrationTests {
 
     init() async throws {
 
+        // Random ports and name.
+        vaporRandomPort = Int.random(in: 1024...65_535)
+        postgresqlRandomPort = Int.random(in: 1024...65_535)
+        postgresqlRandomName = "postgresql-test-\(postgresqlRandomPort)"
+
         // Start a docker container running a postgresql instance.
         let process = Process()
         process.executableURL = URL(fileURLWithPath: "/usr/local/bin/docker")
         process.arguments = [
             "run", "--rm", "--detach",
-            "--name", "postgresql-test",
-            "--hostname", "postgresql-test",
+            "--name", postgresqlRandomName,
+            "--hostname", postgresqlRandomName,
             "--env", "POSTGRES_PASSWORD=mysecretpassword",
-            "--publish", "5432:5432",
+            "--publish", "\(postgresqlRandomPort):5432",
             "postgres:17.5-bookworm"
         ]
         try process.run()
@@ -45,17 +59,18 @@ struct DataAccessServiceFluentIntegrationTests {
 
         // TODO Find a better way to do this (healthcheck maybe).
         // Wait for 1s for the container to be ready.
-        try await Task.sleep(for: .seconds(1))
+        try await Task.sleep(for: .seconds(2))
 
         // Run embeded Vapor server.
         let env = try Environment.detect()
         app = try await Application.make(env)
         app.http.server.configuration.hostname = "0.0.0.0"
-        app.http.server.configuration.port = 50_000
+        app.http.server.configuration.port = vaporRandomPort
         app.databases.use(
             .postgres(
                 configuration: .init(
                     hostname: "localhost",
+                    port: postgresqlRandomPort,
                     username: "postgres",
                     password: "mysecretpassword",
                     database: "postgres",
@@ -86,7 +101,7 @@ struct DataAccessServiceFluentIntegrationTests {
         let process = Process()
         process.executableURL = URL(fileURLWithPath: "/usr/local/bin/docker")
         process.arguments = [
-            "container", "stop", "postgresql-test"
+            "container", "stop", postgresqlRandomName
         ]
         try process.run()
         process.waitUntilExit()
