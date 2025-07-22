@@ -8,16 +8,13 @@
 import Foundation
 
 /// A representation of a customer.
-public struct Customer: CustomStringConvertible, Equatable, Sendable, Codable {
+public struct Customer: Equatable, Sendable, Codable {
 
     /// Unique identifier of the customer.
     public let id: String
 
     /// Secret of the customer.
     public let secret: String
-
-    /// A string description of the customer.
-    public let description: String
 
     /// Initialize the customer.
     ///
@@ -29,9 +26,6 @@ public struct Customer: CustomStringConvertible, Equatable, Sendable, Codable {
         // Copy main members.
         self.id = id
         self.secret = secret
-
-        // Set "description".
-        self.description = "Customer(id='\(id)', secret='\(secret)')"
     }
 
     public static func == (lhs: Customer, rhs: Customer) -> Bool {

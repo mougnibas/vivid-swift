@@ -45,22 +45,6 @@ struct CustomerUnitTests {
         #expect(actual == expected)
     }
 
-    @Test("Full constructor with this given id and secret should have this description", arguments: zip(
-        ["", "my-awesome-id"],
-        ["", "my-awesome-secret"]))
-    func fullConstructorWithThisGivenIdAndSecretShouldHaveThisDescription(id: String, secret: String) throws {
-
-        // Arrange.
-        let expected: String = "Customer(id='\(id)', secret='\(secret)')"
-        let customer: Customer = Customer(id, secret)
-
-        // Act.
-        let actual: String = customer.description
-
-        // Assert.
-        #expect(actual == expected)
-    }
-
     @Test("Equals", arguments: zip(
         [Customer("", ""), Customer("my-awesome-id", "my-awesome-secret")],
         [Customer("", ""), Customer("my-awesome-id", "my-awesome-secret")]))
