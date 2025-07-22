@@ -12,7 +12,9 @@ TODO
 
 ### Latest Swift Release (Swiftly)
 
-Please install latest Swift release (6.1.2) using [https://www.swift.org/install](Swiftly) toolchain.
+Please install latest Swift release (6.2) using [https://www.swift.org/install](Swiftly) toolchain.
+
+Also change Xcode toolchains to match the previously installed one (```Xcode / Toolchains / Swift 6.2```).
 
 ### Vapor
 
