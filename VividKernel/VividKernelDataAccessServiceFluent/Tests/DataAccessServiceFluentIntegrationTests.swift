@@ -16,7 +16,7 @@ import VividKernelDataAccessService
 
 /// Integration tests of ``DataAccessServiceFluent`` class.
 @Suite("DataAccessServiceFluent integration test")
-struct DataAccessServiceFluentIntegrationTests {
+final class DataAccessServiceFluentIntegrationTests {
 
     // Random port used by vapor for the current test method to run.
     let vaporRandomPort: Int
@@ -113,7 +113,7 @@ struct DataAccessServiceFluentIntegrationTests {
         let process = Process()
         process.executableURL = URL(fileURLWithPath: "/usr/local/bin/docker")
         process.arguments = [
-            "container", "stop", "postgresql-test"
+            "container", "stop", postgresqlRandomName
         ]
         try process.run()
         process.waitUntilExit()
