@@ -61,7 +61,7 @@ final class KernelServiceConnectorFluentTests {
         try process.run()
         process.waitUntilExit()
 
-        // Wait for it to be reader.
+        // Wait for it to be ready.
         let maxAttempts = 15
         let delay: UInt64 = 500_000_000 // 0.5 seconds
         for _ in 0..<maxAttempts {
