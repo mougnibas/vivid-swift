@@ -14,9 +14,22 @@ import VividKernelDataAccessService
 import VividKernelDataAccessServiceFluent
 @testable import VividKernelWebserviceLib
 
-@Suite("CustomerControllerFluent test", .serialized)
+@Suite("CustomerControllerFluent test")
 struct CustomerControllerFluentTests {
-    
+
+    // Random port used by docker for postgresql container for the current test method to run.
+    let postgresqlRandomPort: Int
+
+    // Random name used by docker for postgresql container for the current test method to run.
+    let postgresqlRandomName: String
+
+    init() async throws {
+
+            // Random ports and name.
+            postgresqlRandomPort = Int.random(in: 1024...65_535)
+            postgresqlRandomName = "postgresql-test-\(postgresqlRandomPort)"
+    }
+
     func dockerStart() async throws {
 
         // Start a docker container running a postgresql instance.
@@ -24,18 +37,18 @@ struct CustomerControllerFluentTests {
         process.executableURL = URL(fileURLWithPath: "/usr/local/bin/docker")
         process.arguments = [
             "run", "--rm", "--detach",
-            "--name", "postgresql-test",
-            "--hostname", "postgresql-test",
+            "--name", postgresqlRandomName,
+            "--hostname", postgresqlRandomName,
             "--env", "POSTGRES_PASSWORD=mysecretpassword",
-            "--publish", "5432:5432",
+            "--publish", "\(postgresqlRandomPort):5432",
             "postgres:17.5-bookworm"
         ]
         try process.run()
         process.waitUntilExit()
-        
+
         // TODO Find a better way to do this (healthcheck maybe).
-        // Wait for 1s for the container to be ready.
-        try await Task.sleep(for: .seconds(1))
+        // Wait for 5s for the container to be ready.
+        try await Task.sleep(for: .seconds(5))
     }
 
     func dockerStop() async throws {
@@ -43,7 +56,7 @@ struct CustomerControllerFluentTests {
         let process = Process()
         process.executableURL = URL(fileURLWithPath: "/usr/local/bin/docker")
         process.arguments = [
-            "container", "stop", "postgresql-test"
+            "container", "stop", postgresqlRandomName
         ]
         try process.run()
         process.waitUntilExit()
@@ -55,9 +68,7 @@ struct CustomerControllerFluentTests {
         // Start docker instance.
         try await dockerStart()
 
-        // swiftlint:disable multiple_closures_with_trailing_closure
-        try await withApp(configure: { app in try await configureWithFluent(app)}) { app in
-        // swiftlint:enable multiple_closures_with_trailing_closure`
+        try await withApp(configure: { app in try await configureWithFluent(app, postgresqlRandomPort) }, { app in
 
             // Arrange.
             let kernelService: any IKernelService = app.kernelService
@@ -75,14 +86,15 @@ struct CustomerControllerFluentTests {
                 body: .init(data: json),
                 afterResponse: { response async throws in
 
-                let actualStatus: HTTPResponseStatus = response.status
-                let actual: Customer? = try await kernelService.getCustomer(expected.id)
+                    let actualStatus: HTTPResponseStatus = response.status
+                    let actual: Customer? = try await kernelService.getCustomer(expected.id)
 
-                // Assert.
-                #expect(actualStatus == expectedStatus)
-                #expect(actual == expected)
-            })
-        }
+                    // Assert.
+                    #expect(actualStatus == expectedStatus)
+                    #expect(actual == expected)
+                }
+            )
+        })
 
         // Stop docker instance.
         try await dockerStop()
@@ -94,9 +106,7 @@ struct CustomerControllerFluentTests {
         // Start docker instance.
         try await dockerStart()
 
-        // swiftlint:disable multiple_closures_with_trailing_closure
-        try await withApp(configure: { app in try await configureWithFluent(app)}) { app in
-        // swiftlint:enable multiple_closures_with_trailing_closure
+        try await withApp(configure: { app in try await configureWithFluent(app, postgresqlRandomPort) }, { app in
 
             // Arrange.
             let kernelService: any IKernelService = app.kernelService
@@ -116,7 +126,7 @@ struct CustomerControllerFluentTests {
                 #expect(actualStatus == expectedStatus)
                 #expect(actualNumberOfCustomersAfter == expectedNumberOfCustomersAfter)
             })
-        }
+        })
 
         // Stop docker instance.
         try await dockerStop()
@@ -128,9 +138,7 @@ struct CustomerControllerFluentTests {
         // Start docker instance.
         try await dockerStart()
 
-        // swiftlint:disable multiple_closures_with_trailing_closure
-        try await withApp(configure: { app in try await configureWithFluent(app)}) { app in
-        // swiftlint:enable multiple_closures_with_trailing_closure
+        try await withApp(configure: { app in try await configureWithFluent(app, postgresqlRandomPort) }, { app in
 
             // Arrange.
             let kernelService: any IKernelService = app.kernelService
@@ -146,7 +154,7 @@ struct CustomerControllerFluentTests {
                 // Assert.
                 #expect(actualStatus == expectedStatus)
             })
-        }
+        })
 
         // Stop docker instance.
         try await dockerStop()
@@ -158,9 +166,7 @@ struct CustomerControllerFluentTests {
         // Start docker instance.
         try await dockerStart()
 
-        // swiftlint:disable multiple_closures_with_trailing_closure
-        try await withApp(configure: { app in try await configureWithFluent(app)}) { app in
-        // swiftlint:enable multiple_closures_with_trailing_closure
+        try await withApp(configure: { app in try await configureWithFluent(app, postgresqlRandomPort) }, { app in
 
             // Arrange
             let kernelService: any IKernelService = app.kernelService
@@ -181,7 +187,7 @@ struct CustomerControllerFluentTests {
                 #expect(actualStatus == expectedStatus)
                 #expect(actualContent == expectedContent)
             })
-        }
+        })
 
         // Stop docker instance.
         try await dockerStop()
@@ -193,9 +199,7 @@ struct CustomerControllerFluentTests {
         // Start docker instance.
         try await dockerStart()
 
-        // swiftlint:disable multiple_closures_with_trailing_closure
-        try await withApp(configure: { app in try await configureWithFluent(app)}) { app in
-        // swiftlint:enable multiple_closures_with_trailing_closure
+        try await withApp(configure: { app in try await configureWithFluent(app, postgresqlRandomPort) }, { app in
 
             // Arrange.
             let kernelService: any IKernelService = app.kernelService
@@ -216,8 +220,8 @@ struct CustomerControllerFluentTests {
                 #expect(actualStatus == expectedStatus)
                 #expect(actualContent == expectedContent)
             })
-        }
-        
+        })
+
         // Stop docker instance.
         try await dockerStop()
     }
@@ -228,9 +232,7 @@ struct CustomerControllerFluentTests {
         // Start docker instance.
         try await dockerStart()
 
-        // swiftlint:disable multiple_closures_with_trailing_closure
-        try await withApp(configure: { app in try await configureWithFluent(app)}) { app in
-        // swiftlint:enable multiple_closures_with_trailing_closure
+        try await withApp(configure: { app in try await configureWithFluent(app, postgresqlRandomPort) }, { app in
 
             // Arrange.
             let kernelService: any IKernelService = app.kernelService
@@ -255,7 +257,7 @@ struct CustomerControllerFluentTests {
                 #expect(actualStatus == expectedStatus)
                 #expect(actualContent == expectedContent)
             })
-        }
+        })
 
         // Stop docker instance.
         try await dockerStop()

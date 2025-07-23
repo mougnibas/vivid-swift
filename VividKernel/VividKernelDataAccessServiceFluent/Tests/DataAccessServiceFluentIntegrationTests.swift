@@ -101,13 +101,10 @@ struct DataAccessServiceFluentIntegrationTests {
         let process = Process()
         process.executableURL = URL(fileURLWithPath: "/usr/local/bin/docker")
         process.arguments = [
-            "container", "stop", postgresqlRandomName
+            "container", "stop", "postgresql-test"
         ]
         try process.run()
         process.waitUntilExit()
-        if process.terminationStatus != 0 {
-            throw NSError(domain: "DockerStartFailed", code: Int(process.terminationStatus))
-        }
     }
 
     @Test("'addCustomer' then 'getCustomer' should return this customer")
