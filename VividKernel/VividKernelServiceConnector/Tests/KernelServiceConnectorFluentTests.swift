@@ -51,13 +51,29 @@ struct KernelServiceConnectorFluentTests {
         ]
         try process.run()
         process.waitUntilExit()
-        if process.terminationStatus != 0 {
-            throw NSError(domain: "DockerStartFailed", code: Int(process.terminationStatus))
-        }
 
-        // TODO Find a better way to do this (healthcheck maybe).
-        // Wait for 1s for the container to be ready.
-        try await Task.sleep(for: .seconds(2))
+        // Wait for the container to be ready.
+        let maxAttempts = 15
+        let delay: UInt64 = 500_000_000 // 0.5 seconds
+        for _ in 0..<maxAttempts {
+            let checkProcess = Process()
+            checkProcess.executableURL = URL(fileURLWithPath: "/usr/local/bin/docker")
+            checkProcess.arguments = [
+                "exec", postgresqlRandomName,
+                "pg_isready",
+                "-U", "postgres"
+            ]
+            let pipe = Pipe()
+            checkProcess.standardOutput = pipe
+            try checkProcess.run()
+            checkProcess.waitUntilExit()
+            let outputData = pipe.fileHandleForReading.readDataToEndOfFile()
+            if let output = String(data: outputData, encoding: .utf8), output.contains("accepting connections") {
+                break
+            }
+            try await Task.sleep(nanoseconds: delay)
+        }
+        try await Task.sleep(for: .seconds(1))
 
         // Run embeded Vapor server.
         let env = try Environment.detect()
@@ -100,9 +116,6 @@ struct KernelServiceConnectorFluentTests {
         ]
         try process.run()
         process.waitUntilExit()
-        if process.terminationStatus != 0 {
-            throw NSError(domain: "DockerStartFailed", code: Int(process.terminationStatus))
-        }
     }
 
     @Test("Default constructor should not throw exception")
