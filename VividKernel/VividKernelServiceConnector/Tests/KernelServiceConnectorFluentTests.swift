@@ -17,7 +17,7 @@ import VividKernelWebserviceLib
 
 /// Unit tests of ``KernelServiceConnector`` class.
 @Suite("KernelServiceConnector Fluent test")
-struct KernelServiceConnectorFluentTests {
+final class KernelServiceConnectorFluentTests {
 
     // Random port used by vapor for the current test method to run.
     let vaporRandomPort: Int
@@ -29,16 +29,25 @@ struct KernelServiceConnectorFluentTests {
     let postgresqlRandomName: String
 
     // Vapor Application.
-    let app: Application
+    var app: Application!
+
+    // Kernel service.
+    private var kernelService: IKernelService?
 
     init() async throws {
 
-        // Random ports and name.
         vaporRandomPort = Int.random(in: 1024...65_535)
         postgresqlRandomPort = Int.random(in: 1024...65_535)
         postgresqlRandomName = "postgresql-test-\(postgresqlRandomPort)"
 
-        // Start a docker container running a postgresql instance.
+        try await startPostgresContainerThenWaitForItToBeReady()
+        try await startVaporServer()
+        try await populateService()
+    }
+
+    private func startPostgresContainerThenWaitForItToBeReady() async throws {
+
+        // Start the container.
         let process = Process()
         process.executableURL = URL(fileURLWithPath: "/usr/local/bin/docker")
         process.arguments = [
@@ -52,7 +61,7 @@ struct KernelServiceConnectorFluentTests {
         try process.run()
         process.waitUntilExit()
 
-        // Wait for the container to be ready.
+        // Wait for it to be reader.
         let maxAttempts = 15
         let delay: UInt64 = 500_000_000 // 0.5 seconds
         for _ in 0..<maxAttempts {
@@ -73,9 +82,11 @@ struct KernelServiceConnectorFluentTests {
             }
             try await Task.sleep(nanoseconds: delay)
         }
-        try await Task.sleep(for: .seconds(1))
+        try await Task.sleep(for: .seconds(2))
+    }
 
-        // Run embeded Vapor server.
+    private func startVaporServer() async throws {
+
         let env = try Environment.detect()
         app = try await Application.make(env)
         app.http.server.configuration.hostname = "0.0.0.0"
@@ -95,11 +106,15 @@ struct KernelServiceConnectorFluentTests {
         )
         app.migrations.add(Migration001())
         try await app.autoMigrate()
-        let kernelService: IKernelService = KernelServiceImpl(DataAccessServiceFluent(app.db))
+        let kernelService = KernelServiceImpl(DataAccessServiceFluent(app.db)) as IKernelService
         try app.register(collection: CustomerController(kernelService))
         try await app.startup()
+        self.kernelService = kernelService
+    }
 
-        // Populate service.
+    private func populateService() async throws {
+
+        guard let kernelService = self.kernelService else { return }
         try await kernelService.addCustomer(Customer("my-id", "my-secret"))
         try await kernelService.addCustomer(Customer("my-id-2", "my-secret-2"))
     }
