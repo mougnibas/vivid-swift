@@ -119,6 +119,7 @@ final class DataAccessServiceFluentIntegrationTests {
     }
 
     func vaporStop() async throws {
+        try await app.autoRevert()
         try await app.asyncShutdown()
     }
 
