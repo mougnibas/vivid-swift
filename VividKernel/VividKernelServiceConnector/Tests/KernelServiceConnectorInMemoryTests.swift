@@ -16,23 +16,28 @@ import VividKernelWebserviceLib
 
 /// Unit tests of ``KernelServiceConnector`` class.
 @Suite("KernelServiceConnector InMemory test")
-struct KernelServiceConnectorInMemoryTests {
+final class KernelServiceConnectorInMemoryTests {
 
     // Random port used by vapor for the current test method to run.
     let vaporRandomPort: Int
 
-    // Internal service.
-    let serviceInternal: IKernelService
-
     // Vapor Application.
-    let app: Application
+    var app: Application!
+
+    // Kernel service.
+    private var kernelService: IKernelService?
 
     init() async throws {
 
         // Random port.
         vaporRandomPort = Int.random(in: 1024...65_535)
 
-        // Run embeded Vapor server.
+        // Start service and populate it.
+        try await startVaporServer()
+        try await populateService()
+    }
+
+    private func startVaporServer() async throws {
 
         // Get the environment.
         let env = try Environment.detect()
@@ -44,14 +49,17 @@ struct KernelServiceConnectorInMemoryTests {
         try await configureWithInMemory(app, vaporRandomPort)
 
         // We need to get a reference to the kernel service for testing purpose.
-        serviceInternal = app.kernelService
+        self.kernelService = app.kernelService
 
         // Let start the application.
         try await app.startup()
+    }
 
-        // Populate the internal service.
-        try await serviceInternal.addCustomer(Customer("my-id", "my-secret"))
-        try await serviceInternal.addCustomer(Customer("my-id-2", "my-secret-2"))
+    private func populateService() async throws {
+
+        guard let kernelService = self.kernelService else { return }
+        try await kernelService.addCustomer(Customer("my-id", "my-secret"))
+        try await kernelService.addCustomer(Customer("my-id-2", "my-secret-2"))
     }
 
     func vaporStop() async throws {

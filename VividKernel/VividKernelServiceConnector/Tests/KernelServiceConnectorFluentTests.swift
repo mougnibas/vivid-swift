@@ -36,10 +36,12 @@ final class KernelServiceConnectorFluentTests {
 
     init() async throws {
 
+        // Random ports and name
         vaporRandomPort = Int.random(in: 1024...65_535)
         postgresqlRandomPort = Int.random(in: 1024...65_535)
         postgresqlRandomName = "postgresql-test-\(postgresqlRandomPort)"
 
+        // Start requirement, then start service and populate it.
         try await startPostgresContainerThenWaitForItToBeReady()
         try await startVaporServer()
         try await populateService()
