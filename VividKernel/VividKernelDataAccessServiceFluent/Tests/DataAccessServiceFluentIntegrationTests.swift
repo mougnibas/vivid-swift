@@ -27,11 +27,11 @@ final class DataAccessServiceFluentIntegrationTests {
     // Random name used by docker for postgresql container for the current test method to run.
     let postgresqlRandomName: String
 
-    // Service to test
-    let service: DataAccessServiceFluent
-
     // Vapor Application.
     let app: Application
+
+    // Service to test
+    var service: DataAccessServiceFluent?
 
     init() async throws {
 
@@ -39,6 +39,40 @@ final class DataAccessServiceFluentIntegrationTests {
         vaporRandomPort = Int.random(in: 1024...65_535)
         postgresqlRandomPort = Int.random(in: 1024...65_535)
         postgresqlRandomName = "postgresql-test-\(postgresqlRandomPort)"
+
+        // App instance (still need to configure it).
+        let env = try Environment.detect()
+        app = try await Application.make(env)
+
+        // Start PostgreSQL instance and wait for it to be ready.
+        try await startPostgresqlAndWaitForIt()
+
+        // Run embeded Vapor server.
+        app.http.server.configuration.hostname = "0.0.0.0"
+        app.http.server.configuration.port = vaporRandomPort
+        app.databases.use(
+            .postgres(
+                configuration: .init(
+                    hostname: "localhost",
+                    port: postgresqlRandomPort,
+                    username: "postgres",
+                    password: "mysecretpassword",
+                    database: "postgres",
+                    tls: .disable
+                )
+            ),
+            as: .psql
+        )
+        app.migrations.add(Migration001())
+        try await app.autoMigrate()
+        try await app.startup()
+
+        // Service to test.
+        service = DataAccessServiceFluent(app.db)
+        try await populateService()
+    }
+
+    func startPostgresqlAndWaitForIt() async throws {
 
         // Start a docker container running a postgresql instance.
         let process = Process()
@@ -76,33 +110,12 @@ final class DataAccessServiceFluentIntegrationTests {
             try await Task.sleep(nanoseconds: delay)
         }
         try await Task.sleep(for: .seconds(2))
+    }
 
-        // Run embeded Vapor server.
-        let env = try Environment.detect()
-        app = try await Application.make(env)
-        app.http.server.configuration.hostname = "0.0.0.0"
-        app.http.server.configuration.port = vaporRandomPort
-        app.databases.use(
-            .postgres(
-                configuration: .init(
-                    hostname: "localhost",
-                    port: postgresqlRandomPort,
-                    username: "postgres",
-                    password: "mysecretpassword",
-                    database: "postgres",
-                    tls: .disable
-                )
-            ),
-            as: .psql
-        )
-        app.migrations.add(Migration001())
-        try await app.autoMigrate()
-        try await app.startup()
+    func populateService() async throws {
 
-        // Service to test.
-        service = DataAccessServiceFluent(app.db)
-        try await service.addCustomer(Customer("my-id", "my-secret"))
-        try await service.addCustomer(Customer("my-id-2", "my-secret-2"))
+        try await service!.addCustomer(Customer("my-id", "my-secret"))
+        try await service!.addCustomer(Customer("my-id-2", "my-secret-2"))
     }
 
     func vaporStop() async throws {
@@ -126,8 +139,8 @@ final class DataAccessServiceFluentIntegrationTests {
         let expected: Customer = Customer("my-id-3", "my-secret-3")
 
         // Act.
-        try await service.addCustomer(expected)
-        let actual: Customer? = try await service.getCustomer(expected.id)
+        try await service!.addCustomer(expected)
+        let actual: Customer? = try await service!.getCustomer(expected.id)
 
         // Assert.
         #expect(actual == expected)
@@ -146,7 +159,7 @@ final class DataAccessServiceFluentIntegrationTests {
         let expected: Customer = Customer("my-id", "my-secret")
 
         // Act.
-        let actual: Customer? = try await service.getCustomer("my-id")
+        let actual: Customer? = try await service!.getCustomer("my-id")
 
         // Assert
         #expect(actual == expected)
@@ -165,7 +178,7 @@ final class DataAccessServiceFluentIntegrationTests {
         let expected: Customer = Customer("my-id-2", "my-secret-2")
 
         // Act.
-        let actual: Customer? = try await service.getCustomer("my-id-2")
+        let actual: Customer? = try await service!.getCustomer("my-id-2")
 
         // Assert
         #expect(actual == expected)
@@ -184,7 +197,7 @@ final class DataAccessServiceFluentIntegrationTests {
         let expected: Customer? = nil
 
         // Act.
-        let actual: Customer? = try await service.getCustomer("my-id-3")
+        let actual: Customer? = try await service!.getCustomer("my-id-3")
 
         // Assert
         #expect(actual == expected)
@@ -206,7 +219,7 @@ final class DataAccessServiceFluentIntegrationTests {
         ]
 
         // Act.
-        let actual: [Customer] = try await service.getCustomers()
+        let actual: [Customer] = try await service!.getCustomers()
 
         // Assert
         #expect(actual == expected)
