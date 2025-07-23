@@ -76,6 +76,9 @@ docker image build --progress plain --tag vivid-kernel-webservice .
 ### Run images
 
 ```bash
+docker run --rm --tty --interactive --name pgsql  --hostname pgsql                                                    \
+           --env POSTGRES_PASSWORD=mysecretpassword --publish 5432:5432                                               \
+           postgres:17.5-bookworm
 docker run --rm --tty --interactive --name kernel --hostname kernel vivid-kernel-webservice
 ```
 
