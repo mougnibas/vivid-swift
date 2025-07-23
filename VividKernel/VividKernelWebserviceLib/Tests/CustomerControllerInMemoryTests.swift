@@ -20,9 +20,7 @@ struct CustomerControllerInMemoryTests {
     @Test("Send POST to customer (with json) should return this new customer")
     func sendPostToCustomerWithJsonShouldReturnThisNewCustomer() async throws {
 
-        // swiftlint:disable multiple_closures_with_trailing_closure
-        try await withApp(configure: { app in try await configureWithInMemory(app)}) { app in
-        // swiftlint:enable multiple_closures_with_trailing_closure`
+        try await withApp(configure: { app in try await configureWithInMemory(app) }, { app in
 
             // Arrange.
             let kernelService: any IKernelService = app.kernelService
@@ -47,15 +45,13 @@ struct CustomerControllerInMemoryTests {
                 #expect(actualStatus == expectedStatus)
                 #expect(actual == expected)
             })
-        }
+        })
     }
 
     @Test("Send POST to customer should return one more customer")
     func sendPostToCustomerShouldReturnOneMoreCustomer() async throws {
 
-        // swiftlint:disable multiple_closures_with_trailing_closure
-        try await withApp(configure: { app in try await configureWithInMemory(app)}) { app in
-        // swiftlint:enable multiple_closures_with_trailing_closure
+        try await withApp(configure: { app in try await configureWithInMemory(app) }, { app in
 
             // Arrange.
             let kernelService: any IKernelService = app.kernelService
@@ -75,15 +71,13 @@ struct CustomerControllerInMemoryTests {
                 #expect(actualStatus == expectedStatus)
                 #expect(actualNumberOfCustomersAfter == expectedNumberOfCustomersAfter)
             })
-        }
+        })
     }
 
     @Test("Send Get To Customer With 'my-id-not-found' Parameter Should Return 404")
     func sendGetToCustomerWithUnknowIdShouldReturn404() async throws {
 
-        // swiftlint:disable multiple_closures_with_trailing_closure
-        try await withApp(configure: { app in try await configureWithInMemory(app)}) { app in
-        // swiftlint:enable multiple_closures_with_trailing_closure
+        try await withApp(configure: { app in try await configureWithInMemory(app) }, { app in
 
             // Arrange.
             let kernelService: any IKernelService = app.kernelService
@@ -99,15 +93,13 @@ struct CustomerControllerInMemoryTests {
                 // Assert.
                 #expect(actualStatus == expectedStatus)
             })
-        }
+        })
     }
 
     @Test("Send Get To Customer With 'my-id' Parameter Should Return That Customer")
     func sendGetToCustomerWithMyIdParameterShouldReturnThatCustomer() async throws {
 
-        // swiftlint:disable multiple_closures_with_trailing_closure
-        try await withApp(configure: { app in try await configureWithInMemory(app)}) { app in
-        // swiftlint:enable multiple_closures_with_trailing_closure
+        try await withApp(configure: { app in try await configureWithInMemory(app) }, { app in
 
             // Arrange
             let kernelService: any IKernelService = app.kernelService
@@ -128,15 +120,13 @@ struct CustomerControllerInMemoryTests {
                 #expect(actualStatus == expectedStatus)
                 #expect(actualContent == expectedContent)
             })
-        }
+        })
     }
 
     @Test("Send Get To Customer With 'my-id-2' Parameter Should Return That Customer")
     func sendGetToCustomerWithMyId2ParameterShouldReturnThatCustomer() async throws {
 
-        // swiftlint:disable multiple_closures_with_trailing_closure
-        try await withApp(configure: { app in try await configureWithInMemory(app)}) { app in
-        // swiftlint:enable multiple_closures_with_trailing_closure
+        try await withApp(configure: { app in try await configureWithInMemory(app) }, { app in
 
             // Arrange.
             let kernelService: any IKernelService = app.kernelService
@@ -157,15 +147,13 @@ struct CustomerControllerInMemoryTests {
                 #expect(actualStatus == expectedStatus)
                 #expect(actualContent == expectedContent)
             })
-        }
+        })
     }
 
     @Test("Send Get To Customer Without Any Parameter Should Return Those Customers")
     func sendGetToCustomerWithoutAnyParameterShouldReturnThoseCustomers() async throws {
 
-        // swiftlint:disable multiple_closures_with_trailing_closure
-        try await withApp(configure: { app in try await configureWithInMemory(app)}) { app in
-        // swiftlint:enable multiple_closures_with_trailing_closure
+        try await withApp(configure: { app in try await configureWithInMemory(app) }, { app in
 
             // Arrange.
             let kernelService: any IKernelService = app.kernelService
@@ -190,6 +178,6 @@ struct CustomerControllerInMemoryTests {
                 #expect(actualStatus == expectedStatus)
                 #expect(actualContent == expectedContent)
             })
-        }
+        })
     }
 }
