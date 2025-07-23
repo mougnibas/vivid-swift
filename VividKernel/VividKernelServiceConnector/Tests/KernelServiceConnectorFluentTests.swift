@@ -10,44 +10,99 @@ import Testing
 import Vapor
 import VividKernelService
 import VividKernelServiceImpl
-import VividKernelDataAccessServiceInMemory
+import VividKernelDataAccessService
+import VividKernelDataAccessServiceFluent
 import VividKernelWebserviceLib
 @testable import VividKernelServiceConnector
 
 /// Unit tests of ``KernelServiceConnector`` class.
-@Suite("KernelServiceConnector InMemory test")
-struct KernelServiceConnectorInMemoryTests {
+@Suite("KernelServiceConnector Fluent test")
+struct KernelServiceConnectorFluentTests {
 
     // Random port used by vapor for the current test method to run.
     let vaporRandomPort: Int
 
-    // Internal service.
-    let serviceInternal: IKernelService
+    // Random port used by docker for postgresql container for the current test method to run.
+    let postgresqlRandomPort: Int
+
+    // Random name used by docker for postgresql container for the current test method to run.
+    let postgresqlRandomName: String
 
     // Vapor Application.
     let app: Application
 
     init() async throws {
 
-        // Random port.
+        // Random ports and name.
         vaporRandomPort = Int.random(in: 1024...65_535)
+        postgresqlRandomPort = Int.random(in: 1024...65_535)
+        postgresqlRandomName = "postgresql-test-\(postgresqlRandomPort)"
 
-        // Create and populate the internal service.
-        serviceInternal = KernelServiceImpl(DataAccessServiceInMemory())
-        try await serviceInternal.addCustomer(Customer("my-id", "my-secret"))
-        try await serviceInternal.addCustomer(Customer("my-id-2", "my-secret-2"))
+        // Start a docker container running a postgresql instance.
+        let process = Process()
+        process.executableURL = URL(fileURLWithPath: "/usr/local/bin/docker")
+        process.arguments = [
+            "run", "--rm", "--detach",
+            "--name", postgresqlRandomName,
+            "--hostname", postgresqlRandomName,
+            "--env", "POSTGRES_PASSWORD=mysecretpassword",
+            "--publish", "\(postgresqlRandomPort):5432",
+            "postgres:17.5-bookworm"
+        ]
+        try process.run()
+        process.waitUntilExit()
+        if process.terminationStatus != 0 {
+            throw NSError(domain: "DockerStartFailed", code: Int(process.terminationStatus))
+        }
+
+        // TODO Find a better way to do this (healthcheck maybe).
+        // Wait for 1s for the container to be ready.
+        try await Task.sleep(for: .seconds(2))
 
         // Run embeded Vapor server.
         let env = try Environment.detect()
         app = try await Application.make(env)
-        try app.register(collection: CustomerController(serviceInternal))
         app.http.server.configuration.hostname = "0.0.0.0"
         app.http.server.configuration.port = vaporRandomPort
+        app.databases.use(
+            .postgres(
+                configuration: .init(
+                    hostname: "localhost",
+                    port: postgresqlRandomPort,
+                    username: "postgres",
+                    password: "mysecretpassword",
+                    database: "postgres",
+                    tls: .disable
+                )
+            ),
+            as: .psql
+        )
+        app.migrations.add(Migration001())
+        try await app.autoMigrate()
+        let kernelService: IKernelService = KernelServiceImpl(DataAccessServiceFluent(app.db))
+        try app.register(collection: CustomerController(kernelService))
         try await app.startup()
+
+        // Populate service.
+        try await kernelService.addCustomer(Customer("my-id", "my-secret"))
+        try await kernelService.addCustomer(Customer("my-id-2", "my-secret-2"))
     }
 
     func vaporStop() async throws {
         try await app.asyncShutdown()
+    }
+
+    func dockerStop() async throws {
+        let process = Process()
+        process.executableURL = URL(fileURLWithPath: "/usr/local/bin/docker")
+        process.arguments = [
+            "container", "stop", postgresqlRandomName
+        ]
+        try process.run()
+        process.waitUntilExit()
+        if process.terminationStatus != 0 {
+            throw NSError(domain: "DockerStartFailed", code: Int(process.terminationStatus))
+        }
     }
 
     @Test("Default constructor should not throw exception")
@@ -60,6 +115,9 @@ struct KernelServiceConnectorInMemoryTests {
 
         // Stop vapor instance.
         try await vaporStop()
+
+        // Stop docker instance.
+        try await dockerStop()
     }
 
     @Test("'addCustomer' then 'getCustomer' should return this customer")
@@ -78,6 +136,9 @@ struct KernelServiceConnectorInMemoryTests {
 
         // Stop vapor instance.
         try await vaporStop()
+
+        // Stop docker instance.
+        try await dockerStop()
     }
 
     @Test
@@ -94,6 +155,9 @@ struct KernelServiceConnectorInMemoryTests {
 
         // Stop vapor instance.
         try await vaporStop()
+
+        // Stop docker instance.
+        try await dockerStop()
     }
 
     @Test("Calling 'createNewCustomer' should return one more customer")
@@ -113,6 +177,9 @@ struct KernelServiceConnectorInMemoryTests {
 
         // Stop vapor instance.
         try await vaporStop()
+
+        // Stop docker instance.
+        try await dockerStop()
     }
 
     @Test("get customer by id with 'my-id' should return this customer")
@@ -130,6 +197,9 @@ struct KernelServiceConnectorInMemoryTests {
 
         // Stop vapor instance.
         try await vaporStop()
+
+        // Stop docker instance.
+        try await dockerStop()
     }
 
     @Test("get customer by id with 'my-id-2' should return this customer")
@@ -147,6 +217,9 @@ struct KernelServiceConnectorInMemoryTests {
 
         // Stop vapor instance.
         try await vaporStop()
+
+        // Stop docker instance.
+        try await dockerStop()
     }
 
     @Test("get customer by id with 'my-id-3' should return nil")
@@ -164,6 +237,9 @@ struct KernelServiceConnectorInMemoryTests {
 
         // Stop vapor instance.
         try await vaporStop()
+
+        // Stop docker instance.
+        try await dockerStop()
     }
 
     @Test("get all customers should return all customers")
@@ -184,5 +260,8 @@ struct KernelServiceConnectorInMemoryTests {
 
         // Stop vapor instance.
         try await vaporStop()
+
+        // Stop docker instance.
+        try await dockerStop()
     }
 }

@@ -32,6 +32,7 @@ let package = Package(
         .package(path: "../VividKernelService"),
         .package(path: "../VividKernelWebserviceLib"),
         .package(path: "../VividKernelDataAccessServiceInMemory"),
+        .package(path: "../VividKernelDataAccessServiceFluent"),
     ],
 
     // We have the following targets.
@@ -55,6 +56,7 @@ let package = Package(
                 "VividKernelServiceConnector",
                 "VividKernelWebserviceLib",
                 "VividKernelDataAccessServiceInMemory",
+                "VividKernelDataAccessServiceFluent",
                 .product(name: "Vapor", package: "vapor"),
             ],
             plugins: [.plugin(name: "SwiftLintBuildToolPlugin", package: "SwiftLintPlugins")]

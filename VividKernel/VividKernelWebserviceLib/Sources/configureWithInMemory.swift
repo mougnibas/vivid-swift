@@ -31,7 +31,7 @@ public func configureWithInMemory(_ app: Application) async throws {
     app.kernelService = kernelService
 
     // Create the controller with the kernel service, from app storage.
-    let customerController = CustomerController(service: app.kernelService)
+    let customerController = CustomerController(app.kernelService)
 
     // Register my controller.
     try app.register(collection: customerController)

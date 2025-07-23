@@ -16,7 +16,7 @@ public struct CustomerController: RouteCollection, Sendable {
     // Service to use.
     let service: any IKernelService
 
-    public init(service: any IKernelService) {
+    public init(_ service: any IKernelService) {
         self.service = service
     }
 
