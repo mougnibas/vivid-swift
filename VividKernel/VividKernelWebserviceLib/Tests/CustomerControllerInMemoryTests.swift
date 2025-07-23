@@ -17,10 +17,13 @@ import VividKernelDataAccessServiceInMemory
 @Suite("CustomerControllerInMemory test")
 struct CustomerControllerInMemoryTests {
 
+    // Vapor port.
+    let vaporPort: Int = 50_000
+
     @Test("Send POST to customer (with json) should return this new customer")
     func sendPostToCustomerWithJsonShouldReturnThisNewCustomer() async throws {
 
-        try await withApp(configure: { app in try await configureWithInMemory(app) }, { app in
+        try await withApp(configure: { app in try await configureWithInMemory(app, vaporPort) }, { app in
 
             // Arrange.
             let kernelService: any IKernelService = app.kernelService
@@ -51,7 +54,7 @@ struct CustomerControllerInMemoryTests {
     @Test("Send POST to customer should return one more customer")
     func sendPostToCustomerShouldReturnOneMoreCustomer() async throws {
 
-        try await withApp(configure: { app in try await configureWithInMemory(app) }, { app in
+        try await withApp(configure: { app in try await configureWithInMemory(app, vaporPort) }, { app in
 
             // Arrange.
             let kernelService: any IKernelService = app.kernelService
@@ -77,7 +80,7 @@ struct CustomerControllerInMemoryTests {
     @Test("Send Get To Customer With 'my-id-not-found' Parameter Should Return 404")
     func sendGetToCustomerWithUnknowIdShouldReturn404() async throws {
 
-        try await withApp(configure: { app in try await configureWithInMemory(app) }, { app in
+        try await withApp(configure: { app in try await configureWithInMemory(app, vaporPort) }, { app in
 
             // Arrange.
             let kernelService: any IKernelService = app.kernelService
@@ -99,7 +102,7 @@ struct CustomerControllerInMemoryTests {
     @Test("Send Get To Customer With 'my-id' Parameter Should Return That Customer")
     func sendGetToCustomerWithMyIdParameterShouldReturnThatCustomer() async throws {
 
-        try await withApp(configure: { app in try await configureWithInMemory(app) }, { app in
+        try await withApp(configure: { app in try await configureWithInMemory(app, vaporPort) }, { app in
 
             // Arrange
             let kernelService: any IKernelService = app.kernelService
@@ -126,7 +129,7 @@ struct CustomerControllerInMemoryTests {
     @Test("Send Get To Customer With 'my-id-2' Parameter Should Return That Customer")
     func sendGetToCustomerWithMyId2ParameterShouldReturnThatCustomer() async throws {
 
-        try await withApp(configure: { app in try await configureWithInMemory(app) }, { app in
+        try await withApp(configure: { app in try await configureWithInMemory(app, vaporPort) }, { app in
 
             // Arrange.
             let kernelService: any IKernelService = app.kernelService
@@ -153,7 +156,7 @@ struct CustomerControllerInMemoryTests {
     @Test("Send Get To Customer Without Any Parameter Should Return Those Customers")
     func sendGetToCustomerWithoutAnyParameterShouldReturnThoseCustomers() async throws {
 
-        try await withApp(configure: { app in try await configureWithInMemory(app) }, { app in
+        try await withApp(configure: { app in try await configureWithInMemory(app, vaporPort) }, { app in
 
             // Arrange.
             let kernelService: any IKernelService = app.kernelService

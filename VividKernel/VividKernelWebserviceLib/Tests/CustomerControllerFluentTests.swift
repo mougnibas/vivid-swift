@@ -17,17 +17,21 @@ import VividKernelDataAccessServiceFluent
 @Suite("CustomerControllerFluent test")
 struct CustomerControllerFluentTests {
 
+    // Random port used by vapor for the current test method to run.
+    let vaporPort: Int
+
     // Random port used by docker for postgresql container for the current test method to run.
-    let postgresqlRandomPort: Int
+    let pgsqlPort: Int
 
     // Random name used by docker for postgresql container for the current test method to run.
-    let postgresqlRandomName: String
+    let postgresqlName: String
 
     init() async throws {
 
-            // Random ports and name.
-            postgresqlRandomPort = Int.random(in: 1024...65_535)
-            postgresqlRandomName = "postgresql-test-\(postgresqlRandomPort)"
+        // Random ports and name.
+        vaporPort = Int.random(in: 1024...65_535)
+        pgsqlPort = Int.random(in: 1024...65_535)
+        postgresqlName = "postgresql-test-\(pgsqlPort)"
     }
 
     func dockerStart() async throws {
@@ -37,10 +41,10 @@ struct CustomerControllerFluentTests {
         process.executableURL = URL(fileURLWithPath: "/usr/local/bin/docker")
         process.arguments = [
             "run", "--rm", "--detach",
-            "--name", postgresqlRandomName,
-            "--hostname", postgresqlRandomName,
+            "--name", postgresqlName,
+            "--hostname", postgresqlName,
             "--env", "POSTGRES_PASSWORD=mysecretpassword",
-            "--publish", "\(postgresqlRandomPort):5432",
+            "--publish", "\(pgsqlPort):5432",
             "postgres:17.5-bookworm"
         ]
         try process.run()
@@ -53,7 +57,7 @@ struct CustomerControllerFluentTests {
             let checkProcess = Process()
             checkProcess.executableURL = URL(fileURLWithPath: "/usr/local/bin/docker")
             checkProcess.arguments = [
-                "exec", postgresqlRandomName,
+                "exec", postgresqlName,
                 "pg_isready",
                 "-U", "postgres"
             ]
@@ -74,7 +78,7 @@ struct CustomerControllerFluentTests {
         let process = Process()
         process.executableURL = URL(fileURLWithPath: "/usr/local/bin/docker")
         process.arguments = [
-            "container", "stop", postgresqlRandomName
+            "container", "stop", postgresqlName
         ]
         try process.run()
         process.waitUntilExit()
@@ -86,7 +90,7 @@ struct CustomerControllerFluentTests {
         // Start docker instance.
         try await dockerStart()
 
-        try await withApp(configure: { app in try await configureWithFluent(app, postgresqlRandomPort) }, { app in
+        try await withApp(configure: { app in try await configureWithFluent(app, vaporPort, pgsqlPort) }, { app in
 
             // Arrange.
             let kernelService: any IKernelService = app.kernelService
@@ -124,7 +128,7 @@ struct CustomerControllerFluentTests {
         // Start docker instance.
         try await dockerStart()
 
-        try await withApp(configure: { app in try await configureWithFluent(app, postgresqlRandomPort) }, { app in
+        try await withApp(configure: { app in try await configureWithFluent(app, vaporPort, pgsqlPort) }, { app in
 
             // Arrange.
             let kernelService: any IKernelService = app.kernelService
@@ -156,7 +160,7 @@ struct CustomerControllerFluentTests {
         // Start docker instance.
         try await dockerStart()
 
-        try await withApp(configure: { app in try await configureWithFluent(app, postgresqlRandomPort) }, { app in
+        try await withApp(configure: { app in try await configureWithFluent(app, vaporPort, pgsqlPort) }, { app in
 
             // Arrange.
             let kernelService: any IKernelService = app.kernelService
@@ -184,7 +188,7 @@ struct CustomerControllerFluentTests {
         // Start docker instance.
         try await dockerStart()
 
-        try await withApp(configure: { app in try await configureWithFluent(app, postgresqlRandomPort) }, { app in
+        try await withApp(configure: { app in try await configureWithFluent(app, vaporPort, pgsqlPort) }, { app in
 
             // Arrange
             let kernelService: any IKernelService = app.kernelService
@@ -217,7 +221,7 @@ struct CustomerControllerFluentTests {
         // Start docker instance.
         try await dockerStart()
 
-        try await withApp(configure: { app in try await configureWithFluent(app, postgresqlRandomPort) }, { app in
+        try await withApp(configure: { app in try await configureWithFluent(app, vaporPort, pgsqlPort) }, { app in
 
             // Arrange.
             let kernelService: any IKernelService = app.kernelService
@@ -250,7 +254,7 @@ struct CustomerControllerFluentTests {
         // Start docker instance.
         try await dockerStart()
 
-        try await withApp(configure: { app in try await configureWithFluent(app, postgresqlRandomPort) }, { app in
+        try await withApp(configure: { app in try await configureWithFluent(app, vaporPort, pgsqlPort) }, { app in
 
             // Arrange.
             let kernelService: any IKernelService = app.kernelService

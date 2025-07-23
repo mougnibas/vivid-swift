@@ -13,13 +13,13 @@ import VividKernelService
 import VividKernelServiceImpl
 
 // configures your application
-public func configureWithInMemory(_ app: Application) async throws {
+public func configureWithInMemory(_ app: Application, _ vaporPort: Int) async throws {
 
     // Listening on any interface.
     app.http.server.configuration.hostname = "0.0.0.0"
 
     // Listening on this port.
-    app.http.server.configuration.port = 50_000
+    app.http.server.configuration.port = vaporPort
 
     // We instantiate the data service implementation and kernel service implementation.
     // We explicitly use the InMemory implementation of DataAccessService.

@@ -32,18 +32,26 @@ struct KernelServiceConnectorInMemoryTests {
         // Random port.
         vaporRandomPort = Int.random(in: 1024...65_535)
 
-        // Create and populate the internal service.
-        serviceInternal = KernelServiceImpl(DataAccessServiceInMemory())
+        // Run embeded Vapor server.
+
+        // Get the environment.
+        let env = try Environment.detect()
+
+        // Create Vapor Application.
+        app = try await Application.make(env)
+
+        // Configure the application using the provided configure method.
+        try await configureWithInMemory(app, vaporRandomPort)
+
+        // We need to get a reference to the kernel service for testing purpose.
+        serviceInternal = app.kernelService
+
+        // Let start the application.
+        try await app.startup()
+
+        // Populate the internal service.
         try await serviceInternal.addCustomer(Customer("my-id", "my-secret"))
         try await serviceInternal.addCustomer(Customer("my-id-2", "my-secret-2"))
-
-        // Run embeded Vapor server.
-        let env = try Environment.detect()
-        app = try await Application.make(env)
-        try app.register(collection: CustomerController(serviceInternal))
-        app.http.server.configuration.hostname = "0.0.0.0"
-        app.http.server.configuration.port = vaporRandomPort
-        try await app.startup()
     }
 
     func vaporStop() async throws {

@@ -25,7 +25,8 @@ enum Entrypoint {
         do {
 
             // Configure the application using the provided configure method.
-            try await configureWithInMemory(app)
+            let vaportPort: Int = 50000
+            try await configureWithInMemory(app, vaportPort)
 
             // Let start the application.
             try await app.execute()
