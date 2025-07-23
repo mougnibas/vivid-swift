@@ -46,9 +46,27 @@ struct CustomerControllerFluentTests {
         try process.run()
         process.waitUntilExit()
 
-        // TODO Find a better way to do this (healthcheck maybe).
-        // Wait for 5s for the container to be ready.
-        try await Task.sleep(for: .seconds(5))
+        // Wait for the PostgreSQL Docker container to become ready.
+        let maxAttempts = 15
+        let delay: UInt64 = 500_000_000 // 0.5 seconds
+        for _ in 0..<maxAttempts {
+            let checkProcess = Process()
+            checkProcess.executableURL = URL(fileURLWithPath: "/usr/local/bin/docker")
+            checkProcess.arguments = [
+                "exec", postgresqlRandomName,
+                "pg_isready",
+                "-U", "postgres"
+            ]
+            let pipe = Pipe()
+            checkProcess.standardOutput = pipe
+            try checkProcess.run()
+            checkProcess.waitUntilExit()
+            let outputData = pipe.fileHandleForReading.readDataToEndOfFile()
+            if let output = String(data: outputData, encoding: .utf8), output.contains("accepting connections") {
+                break
+            }
+            try await Task.sleep(nanoseconds: delay)
+        }
     }
 
     func dockerStop() async throws {

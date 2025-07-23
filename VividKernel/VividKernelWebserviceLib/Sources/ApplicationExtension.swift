@@ -9,11 +9,11 @@ import Foundation
 import Vapor
 import VividKernelService
 
-extension Application {
+private struct KernelServiceKey: StorageKey {
+    typealias Value = any IKernelService
+}
 
-    private struct KernelServiceKey: StorageKey {
-        typealias Value = any IKernelService
-    }
+extension Application {
 
     var kernelService: any IKernelService {
             get {
