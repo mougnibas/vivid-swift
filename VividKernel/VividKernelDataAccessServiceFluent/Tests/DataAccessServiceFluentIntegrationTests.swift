@@ -109,7 +109,6 @@ final class DataAccessServiceFluentIntegrationTests {
             }
             try await Task.sleep(nanoseconds: delay)
         }
-        try await Task.sleep(for: .seconds(2))
     }
 
     func populateService() async throws {

@@ -20,13 +20,14 @@ enum Entrypoint {
         try LoggingSystem.bootstrap(from: &env)
 
         // Create Vapor Application.
-        let port: Int = 5432
+        let vaporPort: Int = 50000
+        let pgsqlPort: Int = 5432
         let app = try await Application.make(env)
 
         do {
 
             // Configure the application using the provided configure method.
-            try await configureWithFluent(app, port)
+            try await configureWithFluent(app, vaporPort, pgsqlPort)
 
             // Let start the application.
             try await app.execute()

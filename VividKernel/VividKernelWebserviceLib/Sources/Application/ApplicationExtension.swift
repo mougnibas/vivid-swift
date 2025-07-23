@@ -15,7 +15,7 @@ private struct KernelServiceKey: StorageKey {
 
 extension Application {
 
-    var kernelService: any IKernelService {
+    public var kernelService: any IKernelService {
             get {
                 let service = self.storage[KernelServiceKey.self]!
                 return service

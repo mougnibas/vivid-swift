@@ -82,34 +82,28 @@ final class KernelServiceConnectorFluentTests {
             }
             try await Task.sleep(nanoseconds: delay)
         }
+
+        // Should be good at this time, but tests fail randomly.
+        // Increasing the wait time fix this behavior for an unknown reason.
         try await Task.sleep(for: .seconds(2))
     }
 
     private func startVaporServer() async throws {
 
+        // Get the environment.
         let env = try Environment.detect()
+
+        // Create Vapor Application.
         app = try await Application.make(env)
-        app.http.server.configuration.hostname = "0.0.0.0"
-        app.http.server.configuration.port = vaporRandomPort
-        app.databases.use(
-            .postgres(
-                configuration: .init(
-                    hostname: "localhost",
-                    port: postgresqlRandomPort,
-                    username: "postgres",
-                    password: "mysecretpassword",
-                    database: "postgres",
-                    tls: .disable
-                )
-            ),
-            as: .psql
-        )
-        app.migrations.add(Migration001())
-        try await app.autoMigrate()
-        let kernelService = KernelServiceImpl(DataAccessServiceFluent(app.db)) as IKernelService
-        try app.register(collection: CustomerController(kernelService))
+
+        // Configure the application using the provided configure method.
+        try await configureWithFluent(app, vaporRandomPort, postgresqlRandomPort)
+
+        // We need to get a reference to the kernel service for testing purpose.
+        self.kernelService = app.kernelService
+
+        // Let start the application.
         try await app.startup()
-        self.kernelService = kernelService
     }
 
     private func populateService() async throws {
