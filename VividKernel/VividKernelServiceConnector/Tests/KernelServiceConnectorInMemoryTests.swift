@@ -10,6 +10,7 @@ import Testing
 import Vapor
 import VividKernelService
 import VividKernelServiceImpl
+import VividKernelDataAccessService
 import VividKernelDataAccessServiceInMemory
 import VividKernelWebserviceLib
 @testable import VividKernelServiceConnector
