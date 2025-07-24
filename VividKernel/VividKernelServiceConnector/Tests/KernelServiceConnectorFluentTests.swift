@@ -134,7 +134,7 @@ final class KernelServiceConnectorFluentTests {
 
         // Arrange, act and assert.
         #expect(throws: Never.self) {
-            KernelServiceConnector("http://localhost", vaporRandomPort)
+            KernelServiceConnector("http://localhost", self.vaporRandomPort)
         }
 
         // Stop vapor instance.
