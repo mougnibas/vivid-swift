@@ -2,14 +2,19 @@
 
 import PackageDescription
 
-// Only enable swiftlint plugin if running from macOS (can't be run as plugin outside of macOS).
+// Only enable swiftlint (package and plugin) if running from macOS (can't be run as plugin outside of macOS).
 #if os(macOS)
+let packageDependencies: [Package.Dependency] = [
+    .package(url: "https://github.com/SimplyDanny/SwiftLintPlugins", exact: "0.59.1")
+]
 let swiftLintPlugins: [Target.PluginUsage] = [
     .plugin(name: "SwiftLintBuildToolPlugin", package: "SwiftLintPlugins")
 ]
 #else
+let packageDependencies: [Package.Dependency] = []
 let swiftLintPlugins: [Target.PluginUsage] = []
 #endif
+
 
 let package = Package(
 
@@ -19,7 +24,7 @@ let package = Package(
     // Can run only on this platform.
     // This "requirement" is actually only for SwiftLint.
     platforms: [
-        .macOS(.v15)
+        .macOS(.v15),
     ],
 
     // This is a library package.
@@ -31,11 +36,10 @@ let package = Package(
     ],
 
     // This package declare this dependencies (package level).
-    dependencies: [
+    dependencies:
 
         // Public dependencies.
-        .package(url: "https://github.com/SimplyDanny/SwiftLintPlugins", exact: "0.59.1"),
-    ],
+        packageDependencies,
 
     // We have the following targets.
     targets: [
