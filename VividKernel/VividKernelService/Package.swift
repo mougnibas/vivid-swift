@@ -16,6 +16,12 @@ let package = Package(
     // Name of the package.
     name: "VividKernelService",
 
+    // Can run only on this platform.
+    // This "requirement" is actually only for SwiftLint.
+    platforms: [
+        .macOS(.v15)
+    ],
+
     // This is a library package.
     products: [
         .library(
