@@ -19,8 +19,7 @@
 ## Full swift image to build swift binaries.
 ##
 
-#FROM swift:6.1.2-noble AS builder
-FROM swiftlang/swift:nightly-6.2-debian12 AS builder
+FROM swift:6.1.2-noble AS builder
 
 ##
 ## Default user.
@@ -46,14 +45,6 @@ COPY   ./VividKernelService/Package.swift      ./VividKernelService/Package.swif
 COPY   ./VividKernelService/Sources            ./VividKernelService/Sources
 COPY   ./VividKernelService/Tests              ./VividKernelService/Tests
 
-# VividKernelDataAccessService
-COPY   ./VividKernelDataAccessService/Package.swift      ./VividKernelDataAccessService/Package.swift
-COPY   ./VividKernelDataAccessService/Sources            ./VividKernelDataAccessService/Sources
-
-# VividKernelDataAccessServiceInMemory
-COPY   ./VividKernelDataAccessServiceInMemory/Package.swift      ./VividKernelDataAccessServiceInMemory/Package.swift
-COPY   ./VividKernelDataAccessServiceInMemory/Sources            ./VividKernelDataAccessServiceInMemory/Sources
-
 ##
 ## Swift build.
 ##
@@ -62,14 +53,6 @@ COPY   ./VividKernelDataAccessServiceInMemory/Sources            ./VividKernelDa
 RUN     cd ./VividKernelService/      && swift package resolve
 RUN     cd ./VividKernelService/      && swift build --configuration release
 
-# VividKernelDataAccessService
-RUN     cd ./VividKernelDataAccessService/      && swift package resolve
-RUN     cd ./VividKernelDataAccessService/      && swift build --configuration release
-
-# VividKernelDataAccessServiceInMemory
-RUN     cd ./VividKernelDataAccessService/      && swift package resolve
-RUN     cd ./VividKernelDataAccessService/      && swift build --configuration release
-
 ##
 ## Second stage (add binary to base image).
 ##
@@ -77,8 +60,7 @@ RUN     cd ./VividKernelDataAccessService/      && swift build --configuration r
 ##
 ## "Slim" swift image to run the binary.
 ##
-#FROM swift:6.1.2-noble-slim
-FROM swiftlang/swift:nightly-6.2-debian12
+FROM swift:6.1.2-noble-slim
 
 ##
 ## Conventional path.

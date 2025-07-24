@@ -2,16 +2,19 @@
 
 import PackageDescription
 
+// Only enable swiftlint plugin if running from macOS (can't be run as plugin outside of macOS).
+#if os(macOS)
+let swiftLintPlugins: [Target.PluginUsage] = [
+    .plugin(name: "SwiftLintBuildToolPlugin", package: "SwiftLintPlugins")
+]
+#else
+let swiftLintPlugins: [Target.PluginUsage] = []
+#endif
+
 let package = Package(
 
     // Name of the package.
     name: "VividKernelService",
-
-    // Can run only on this platform.
-    // This "requirement" is actually only for SwiftLint.
-    platforms: [
-        .macOS(.v15)
-    ],
 
     // This is a library package.
     products: [
@@ -35,7 +38,7 @@ let package = Package(
         // SwiftLint is used as plugin when the project is build.
         .target(
             name: "VividKernelService",
-            plugins: [.plugin(name: "SwiftLintBuildToolPlugin", package: "SwiftLintPlugins")]
+            plugins: swiftLintPlugins
         ),
 
         // Test target, with only one dependency : The main package.
@@ -43,7 +46,7 @@ let package = Package(
         .testTarget(
             name: "VividKernelServiceTests",
             dependencies: ["VividKernelService"],
-            plugins: [.plugin(name: "SwiftLintBuildToolPlugin", package: "SwiftLintPlugins")]
+            plugins: swiftLintPlugins
         )
     ]
 )
