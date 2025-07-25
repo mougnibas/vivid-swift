@@ -15,16 +15,16 @@ import VividKernelDataAccessServiceFluent
 @testable import VividKernelWebserviceLib
 
 @Suite("CustomerControllerFluent test")
-struct CustomerControllerFluentTests {
+final class CustomerControllerFluentTests {
 
     // Random port used by vapor for the current test method to run.
-    let vaporPort: Int
+    var vaporPort: Int
 
     // PostgreSQL host.
     let pgsqlHost: String = "localhost"
 
     // Random port used by docker for postgresql container for the current test method to run.
-    let pgsqlPort: Int
+    var pgsqlPort: Int
 
     // Random name used by docker for postgresql container for the current test method to run.
     let postgresqlName: String
@@ -95,7 +95,7 @@ struct CustomerControllerFluentTests {
 
         try await withApp(
             configure: { app in
-                try await configureWithFluent(app, vaporPort, pgsqlHost, pgsqlPort)}, { app in
+                try await configureWithFluent(app, self.vaporPort, self.pgsqlHost, self.pgsqlPort)}, { app in
 
             // Arrange.
             let kernelService: any IKernelService = app.kernelService
@@ -135,7 +135,7 @@ struct CustomerControllerFluentTests {
 
         try await withApp(
             configure: { app in
-                try await configureWithFluent(app, vaporPort, pgsqlHost, pgsqlPort)}, { app in
+                try await configureWithFluent(app, self.vaporPort, self.pgsqlHost, self.pgsqlPort)}, { app in
 
             // Arrange.
             let kernelService: any IKernelService = app.kernelService
@@ -169,7 +169,7 @@ struct CustomerControllerFluentTests {
 
         try await withApp(
             configure: { app in
-                try await configureWithFluent(app, vaporPort, pgsqlHost, pgsqlPort)}, { app in
+                try await configureWithFluent(app, self.vaporPort, self.pgsqlHost, self.pgsqlPort)}, { app in
 
             // Arrange.
             let kernelService: any IKernelService = app.kernelService
@@ -199,7 +199,7 @@ struct CustomerControllerFluentTests {
 
         try await withApp(
             configure: { app in
-                try await configureWithFluent(app, vaporPort, pgsqlHost, pgsqlPort)}, { app in
+                try await configureWithFluent(app, self.vaporPort, self.pgsqlHost, self.pgsqlPort)}, { app in
 
             // Arrange
             let kernelService: any IKernelService = app.kernelService
@@ -234,7 +234,7 @@ struct CustomerControllerFluentTests {
 
         try await withApp(
             configure: { app in
-                try await configureWithFluent(app, vaporPort, pgsqlHost, pgsqlPort)}, { app in
+                try await configureWithFluent(app, self.vaporPort, self.pgsqlHost, self.pgsqlPort)}, { app in
 
             // Arrange.
             let kernelService: any IKernelService = app.kernelService
@@ -269,7 +269,50 @@ struct CustomerControllerFluentTests {
 
         try await withApp(
             configure: { app in
-                try await configureWithFluent(app, vaporPort, pgsqlHost, pgsqlPort)}, { app in
+                try await configureWithFluent(app, self.vaporPort, self.pgsqlHost, self.pgsqlPort)}, { app in
+
+            // Arrange.
+            let kernelService: any IKernelService = app.kernelService
+            try await kernelService.addCustomer(Customer("my-id", "my-secret"))
+            try await kernelService.addCustomer(Customer("my-id-2", "my-secret-2"))
+            let expectedStatus: HTTPResponseStatus = .ok
+            let expectedContent: [Customer] = [
+                Customer("my-id", "my-secret"),
+                Customer("my-id-2", "my-secret-2")
+            ]
+
+            // Act.
+            try await app.testing().test(.GET, "customer", afterResponse: { response async throws in
+
+                let actualStatus: HTTPResponseStatus = response.status
+                let json: String = response.body.string
+                let jsonData: Data? = json.data(using: .utf8)
+                let actualContent: [Customer]? = try JSONDecoder().decode(
+                    [Customer].self, from: jsonData!)
+
+                // Assert.
+                #expect(actualStatus == expectedStatus)
+                #expect(actualContent == expectedContent)
+            })
+        })
+
+        // Stop docker instance.
+        try await dockerStop()
+    }
+
+    @Test("Create a default app then send Get To Customer Without Any Parameter Should Return Those Customers")
+    func createDefaultThenSendGetToCustomerWithoutAnyParameterShouldReturnThoseCustomers() async throws {
+
+        // Override random ports.
+        self.vaporPort = 50_000
+        self.pgsqlPort = 5_432
+
+        // Start docker instance.
+        try await dockerStart()
+
+        try await withApp(
+            configure: { app in
+                try await configureWithFluent(app, nil, nil, nil)}, { app in
 
             // Arrange.
             let kernelService: any IKernelService = app.kernelService

@@ -183,4 +183,36 @@ struct CustomerControllerInMemoryTests {
             })
         })
     }
+
+    @Test("Create a default app then send Get To Customer Without Any Parameter Should Return Those Customers")
+    func createDefaultThenSendGetToCustomerWithoutAnyParameterShouldReturnThoseCustomers() async throws {
+
+        let vaporPort: Int? = nil
+        try await withApp(configure: { app in try await configureWithInMemory(app, vaporPort) }, { app in
+
+            // Arrange.
+            let kernelService: any IKernelService = app.kernelService
+            try await kernelService.addCustomer(Customer("my-id", "my-secret"))
+            try await kernelService.addCustomer(Customer("my-id-2", "my-secret-2"))
+            let expectedStatus: HTTPResponseStatus = .ok
+            let expectedContent: [Customer] = [
+                Customer("my-id", "my-secret"),
+                Customer("my-id-2", "my-secret-2")
+            ]
+
+            // Act.
+            try await app.testing().test(.GET, "customer", afterResponse: { response async throws in
+
+                let actualStatus: HTTPResponseStatus = response.status
+                let json: String = response.body.string
+                let jsonData: Data? = json.data(using: .utf8)
+                let actualContent: [Customer]? = try JSONDecoder().decode(
+                    [Customer].self, from: jsonData!)
+
+                // Assert.
+                #expect(actualStatus == expectedStatus)
+                #expect(actualContent == expectedContent)
+            })
+        })
+    }
 }
