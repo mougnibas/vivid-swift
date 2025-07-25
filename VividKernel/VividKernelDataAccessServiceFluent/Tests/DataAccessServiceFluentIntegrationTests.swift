@@ -109,6 +109,10 @@ final class DataAccessServiceFluentIntegrationTests {
             }
             try await Task.sleep(nanoseconds: delay)
         }
+
+        // Should be good at this time, but tests fail randomly.
+        // Increasing the wait time fix this behavior for an unknown reason.
+        try await Task.sleep(for: .seconds(2))
     }
 
     func populateService() async throws {
