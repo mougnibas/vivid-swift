@@ -80,12 +80,10 @@ docker compose up
 
 #### Fluent
 
-TODO
-
 ```bash
-docker run --rm --tty --interactive --name pgsql  --hostname pgsql                                                    \
-           --env POSTGRES_PASSWORD=mysecretpassword --publish 5432:5432                                               \
-           postgres:17.5-bookworm
+cd docker/compose/fluent
+docker compose build
+docker compose up
 ```
 
 ### Test images

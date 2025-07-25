@@ -22,4 +22,3 @@ services:
     # Published port
     ports:
       - "50000:50000"
-  

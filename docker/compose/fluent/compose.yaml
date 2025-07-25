@@ -1,0 +1,48 @@
+## GNU AFFERO GENERAL PUBLIC LICENSE
+## Version 3, 19 November 2007
+##
+## Copyright (C) 2007 Free Software Foundation, Inc. <https://fsf.org/>
+## Everyone is permitted to copy and distribute verbatim copies
+## of this license document, but changing it is not allowed.
+
+# Services available
+services:
+
+  # Kernel service
+  kernel:
+
+    # Build
+    build:
+      context: ../../../
+      dockerfile: docker/compose/fluent/Dockerfile
+
+    # Image
+    image: vivid-kernel-fluent
+
+    # Published port
+    ports:
+      - "50000:50000"
+
+    # Depends on
+    depends_on:
+      pgsql:
+        condition: service_healthy
+
+  # PostgreSQL service
+  pgsql:
+
+    # Image
+    image: postgres:17.5-bookworm
+
+    # Environment
+    environment:
+      POSTGRES_PASSWORD: mysecretpassword
+
+    # Healthcheck
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "postgres"]
+      interval: 30s
+      timeout: 1s
+      start_period: 2s
+      start_interval: 1s
+      retries: 3

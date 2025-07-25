@@ -15,7 +15,11 @@ import VividKernelService
 import VividKernelServiceImpl
 
 // configures your application
-public func configureWithFluent(_ app: Application, _ vaporPort: Int, _ pgsqlPort: Int) async throws {
+public func configureWithFluent(
+    _ app: Application,
+    _ vaporPort: Int,
+    _ pgsqlHost: String,
+    _ pgsqlPort: Int) async throws {
 
     // Listening on any interface.
     app.http.server.configuration.hostname = "0.0.0.0"
@@ -27,7 +31,7 @@ public func configureWithFluent(_ app: Application, _ vaporPort: Int, _ pgsqlPor
     app.databases.use(
         .postgres(
             configuration: .init(
-                hostname: "localhost",
+                hostname: pgsqlHost,
                 port: pgsqlPort,
                 username: "postgres",
                 password: "mysecretpassword",
