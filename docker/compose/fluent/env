@@ -1,0 +1,8 @@
+VAPOR_ENV=development
+
+# Vapor variables
+VAPOR_PORT=50000
+
+# PostgreSQL variables
+PGSQL_HOST=pgsql
+PGSQL_PORT=5432

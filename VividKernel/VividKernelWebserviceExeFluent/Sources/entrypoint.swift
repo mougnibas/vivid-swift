@@ -25,9 +25,9 @@ enum Entrypoint {
         do {
 
             // Configure the application using the provided configure method.
-            let vaporPort: Int = 50000
-            let pgsqlHost: String = "pgsql"
-            let pgsqlPort: Int = 5432
+            let vaporPort: Int? = nil
+            let pgsqlHost: String? = nil
+            let pgsqlPort: Int? = nil
             try await configureWithFluent(app, vaporPort, pgsqlHost, pgsqlPort)
 
             // Let start the application.

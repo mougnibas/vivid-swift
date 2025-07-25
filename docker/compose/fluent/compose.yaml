@@ -14,7 +14,7 @@ services:
     # Build
     build:
       context: ../../../
-      dockerfile: docker/compose/fluent/Dockerfile
+      dockerfile: ./docker/compose/fluent/Dockerfile
 
     # Image
     image: vivid-kernel-fluent
@@ -22,6 +22,10 @@ services:
     # Published port
     ports:
       - "50000:50000"
+
+    # Configuration
+    volumes:
+      - ./env:/app/.env
 
     # Depends on
     depends_on:

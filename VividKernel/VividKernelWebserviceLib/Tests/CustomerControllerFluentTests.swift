@@ -20,6 +20,9 @@ struct CustomerControllerFluentTests {
     // Random port used by vapor for the current test method to run.
     let vaporPort: Int
 
+    // PostgreSQL host.
+    let pgsqlHost: String = "localhost"
+
     // Random port used by docker for postgresql container for the current test method to run.
     let pgsqlPort: Int
 
@@ -90,7 +93,9 @@ struct CustomerControllerFluentTests {
         // Start docker instance.
         try await dockerStart()
 
-        try await withApp(configure: { app in try await configureWithFluent(app, vaporPort, pgsqlPort) }, { app in
+        try await withApp(
+            configure: { app in
+                try await configureWithFluent(app, vaporPort, pgsqlHost, pgsqlPort)}, { app in
 
             // Arrange.
             let kernelService: any IKernelService = app.kernelService
@@ -128,7 +133,9 @@ struct CustomerControllerFluentTests {
         // Start docker instance.
         try await dockerStart()
 
-        try await withApp(configure: { app in try await configureWithFluent(app, vaporPort, pgsqlPort) }, { app in
+        try await withApp(
+            configure: { app in
+                try await configureWithFluent(app, vaporPort, pgsqlHost, pgsqlPort)}, { app in
 
             // Arrange.
             let kernelService: any IKernelService = app.kernelService
@@ -160,7 +167,9 @@ struct CustomerControllerFluentTests {
         // Start docker instance.
         try await dockerStart()
 
-        try await withApp(configure: { app in try await configureWithFluent(app, vaporPort, pgsqlPort) }, { app in
+        try await withApp(
+            configure: { app in
+                try await configureWithFluent(app, vaporPort, pgsqlHost, pgsqlPort)}, { app in
 
             // Arrange.
             let kernelService: any IKernelService = app.kernelService
@@ -188,7 +197,9 @@ struct CustomerControllerFluentTests {
         // Start docker instance.
         try await dockerStart()
 
-        try await withApp(configure: { app in try await configureWithFluent(app, vaporPort, pgsqlPort) }, { app in
+        try await withApp(
+            configure: { app in
+                try await configureWithFluent(app, vaporPort, pgsqlHost, pgsqlPort)}, { app in
 
             // Arrange
             let kernelService: any IKernelService = app.kernelService
@@ -221,7 +232,9 @@ struct CustomerControllerFluentTests {
         // Start docker instance.
         try await dockerStart()
 
-        try await withApp(configure: { app in try await configureWithFluent(app, vaporPort, pgsqlPort) }, { app in
+        try await withApp(
+            configure: { app in
+                try await configureWithFluent(app, vaporPort, pgsqlHost, pgsqlPort)}, { app in
 
             // Arrange.
             let kernelService: any IKernelService = app.kernelService
@@ -254,7 +267,9 @@ struct CustomerControllerFluentTests {
         // Start docker instance.
         try await dockerStart()
 
-        try await withApp(configure: { app in try await configureWithFluent(app, vaporPort, pgsqlPort) }, { app in
+        try await withApp(
+            configure: { app in
+                try await configureWithFluent(app, vaporPort, pgsqlHost, pgsqlPort)}, { app in
 
             // Arrange.
             let kernelService: any IKernelService = app.kernelService

@@ -60,6 +60,16 @@ Just run "Build" or "Test", then open "Show the issue navigator" on the left pan
 
 After running tests, code coverage result is available on "Show the Report navigator" on the left panel.
 
+### PgSQL
+
+To run a fluent instance outside of docker compose and swift test, run :
+
+```bash
+docker run --rm --tty --interactive --name pgsql  --hostname pgsql                                                    \
+           --env POSTGRES_PASSWORD=mysecretpassword --publish 5432:5432                                               \
+           postgres:17.5-bookworm
+```
+
 ## Docker Desktop
 
 ### Build and run images

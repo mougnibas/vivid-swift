@@ -17,49 +17,55 @@ import VividKernelServiceImpl
 // configures your application
 public func configureWithFluent(
     _ app: Application,
-    _ vaporPort: Int,
-    _ pgsqlHost: String,
-    _ pgsqlPort: Int) async throws {
+    _ vaportPort: Int?,
+    _ pgsqlHost: String?,
+    _ pgsqlPort: Int?) async throws {
 
-    // Listening on any interface.
-    app.http.server.configuration.hostname = "0.0.0.0"
+        // Get the environemt variables.
+        // Priorities : method arg value > environment value > default
+        let vaportPortToUse: Int = vaportPort ?? Int(Environment.get("VAPOR_PORT") ?? "50000")!
+        let pgsqlHostToUse: String = pgsqlHost ?? Environment.get("PGSQL_HOST") ?? "localhost"
+        let pgsqlPortToUse: Int = pgsqlPort ?? Int(Environment.get("PGSQL_PORT") ?? "5432")!
 
-    // Listening on this port.
-    app.http.server.configuration.port = vaporPort
+        // Listening on any interface.
+        app.http.server.configuration.hostname = "0.0.0.0"
 
-    // Configure a database (postgresql).
-    app.databases.use(
-        .postgres(
-            configuration: .init(
-                hostname: pgsqlHost,
-                port: pgsqlPort,
-                username: "postgres",
-                password: "mysecretpassword",
-                database: "postgres",
-                tls: .disable
-            )
-        ),
-        as: .psql
-    )
+        // Listening on this port.
+        app.http.server.configuration.port = vaportPortToUse
 
-    // Configure migrations.
-    app.migrations.add(Migration001())
+        // Configure a database (postgresql).
+        app.databases.use(
+            .postgres(
+                configuration: .init(
+                    hostname: pgsqlHostToUse,
+                    port: pgsqlPortToUse,
+                    username: "postgres",
+                    password: "mysecretpassword",
+                    database: "postgres",
+                    tls: .disable
+                )
+            ),
+            as: .psql
+        )
 
-    // Run migrations.
-    try await app.autoMigrate()
+        // Configure migrations.
+        app.migrations.add(Migration001())
 
-    // We instantiate the data service implementation and kernel service implementation.
-    // We explicitly use the Fluent implementation of DataAccessService.
-    // We explicitly use the default implementation of KernelService.
-    let dataAccessService: IDataAccessService = DataAccessServiceFluent(app.db)
-    let kernelService: any IKernelService = KernelServiceImpl(dataAccessService)
+        // Run migrations.
+        try await app.autoMigrate()
 
-    // Store the kernel service globally in the app container.
-    app.kernelService = kernelService
+        // We instantiate the data service implementation and kernel service implementation.
+        // We explicitly use the Fluent implementation of DataAccessService.
+        // We explicitly use the default implementation of KernelService.
+        let dataAccessService: IDataAccessService = DataAccessServiceFluent(app.db)
+        let kernelService: any IKernelService = KernelServiceImpl(dataAccessService)
 
-    // Create the controller with the kernel service, from app storage.
-    let customerController = CustomerController(app.kernelService)
+        // Store the kernel service globally in the app container.
+        app.kernelService = kernelService
 
-    // Register my controller.
-    try app.register(collection: customerController)
+        // Create the controller with the kernel service, from app storage.
+        let customerController = CustomerController(app.kernelService)
+
+        // Register my controller.
+        try app.register(collection: customerController)
 }

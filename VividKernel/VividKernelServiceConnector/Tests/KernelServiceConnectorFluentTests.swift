@@ -22,6 +22,9 @@ final class KernelServiceConnectorFluentTests {
     // Random port used by vapor for the current test method to run.
     let vaporRandomPort: Int
 
+    // Fixed PostgreSQL host.
+    let postgresqlHost: String = "localhost"
+
     // Random port used by docker for postgresql container for the current test method to run.
     let postgresqlRandomPort: Int
 
@@ -99,7 +102,7 @@ final class KernelServiceConnectorFluentTests {
         app = try await Application.make(env)
 
         // Configure the application using the provided configure method.
-        try await configureWithFluent(app, vaporRandomPort, postgresqlRandomPort)
+        try await configureWithFluent(app, vaporRandomPort, postgresqlHost, postgresqlRandomPort)
 
         // We need to get a reference to the kernel service for testing purpose.
         self.kernelService = app.kernelService

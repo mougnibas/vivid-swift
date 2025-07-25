@@ -10,6 +10,9 @@
    <FileRef
       location = "group:README.md">
    </FileRef>
+   <FileRef
+      location = "group:TODO.md">
+   </FileRef>
    <FileSystemSynchronizedGroup
       location = "group:docker"
       name = "docker">

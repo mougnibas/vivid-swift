@@ -13,26 +13,32 @@ import VividKernelService
 import VividKernelServiceImpl
 
 // configures your application
-public func configureWithInMemory(_ app: Application, _ vaporPort: Int) async throws {
+public func configureWithInMemory(
+    _ app: Application,
+    _ vaporPort: Int?) async throws {
 
-    // Listening on any interface.
-    app.http.server.configuration.hostname = "0.0.0.0"
+        // Get the environemt variables.
+        // Priorities : method arg value > environment value > default
+        let vaportPortToUse: Int = vaporPort ?? Int(Environment.get("VAPOR_PORT") ?? "50000")!
 
-    // Listening on this port.
-    app.http.server.configuration.port = vaporPort
+        // Listening on any interface.
+        app.http.server.configuration.hostname = "0.0.0.0"
 
-    // We instantiate the data service implementation and kernel service implementation.
-    // We explicitly use the InMemory implementation of DataAccessService.
-    // We explicitly use the default implementation of KernelService.
-    let dataAccessService: IDataAccessService = DataAccessServiceInMemory()
-    let kernelService: any IKernelService = KernelServiceImpl(dataAccessService)
+        // Listening on this port.
+        app.http.server.configuration.port = vaportPortToUse
 
-    // Store the kernel service globally in the app container.
-    app.kernelService = kernelService
+        // We instantiate the data service implementation and kernel service implementation.
+        // We explicitly use the InMemory implementation of DataAccessService.
+        // We explicitly use the default implementation of KernelService.
+        let dataAccessService: IDataAccessService = DataAccessServiceInMemory()
+        let kernelService: any IKernelService = KernelServiceImpl(dataAccessService)
 
-    // Create the controller with the kernel service, from app storage.
-    let customerController = CustomerController(app.kernelService)
+        // Store the kernel service globally in the app container.
+        app.kernelService = kernelService
 
-    // Register my controller.
-    try app.register(collection: customerController)
+        // Create the controller with the kernel service, from app storage.
+        let customerController = CustomerController(app.kernelService)
+
+        // Register my controller.
+        try app.register(collection: customerController)
 }
