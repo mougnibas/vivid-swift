@@ -11,6 +11,10 @@
       location = "group:README.md">
    </FileRef>
    <FileSystemSynchronizedGroup
+      location = "group:docker"
+      name = "docker">
+   </FileSystemSynchronizedGroup>
+   <FileSystemSynchronizedGroup
       location = "group:VividKernel"
       name = "VividKernel">
    </FileSystemSynchronizedGroup>

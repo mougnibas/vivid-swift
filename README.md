@@ -62,22 +62,30 @@ After running tests, code coverage result is available on "Show the Report navig
 
 ## Docker Desktop
 
-### Build images
+### Build and run images
 
-#### Kernel
+#### Build cache ressource cleanup
 
 ```bash
-cd VividKernel/
-docker image build --progress plain --tag vivid-kernel-webservice .
+docker builder prune
 ```
 
-### Run images
+#### InMemory
+
+```bash
+cd docker/compose/in-memory
+docker compose build
+docker compose up
+```
+
+#### Fluent
+
+TODO
 
 ```bash
 docker run --rm --tty --interactive --name pgsql  --hostname pgsql                                                    \
            --env POSTGRES_PASSWORD=mysecretpassword --publish 5432:5432                                               \
            postgres:17.5-bookworm
-docker run --rm --tty --interactive --name kernel --hostname kernel vivid-kernel-webservice
 ```
 
 ### Test images

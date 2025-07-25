@@ -8,6 +8,12 @@
 import Foundation
 import VividKernelService
 
+// Swift Foundation on GNU/Linux don't provide networking types.
+// This import is mandatory on GNU/Linux systems.
+#if canImport(FoundationNetworking)
+import FoundationNetworking
+#endif
+
 /// Connector based implementation of kernel service.
 public actor KernelServiceConnector: IKernelService {
 

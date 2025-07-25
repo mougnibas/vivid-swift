@@ -2,6 +2,19 @@
 
 import PackageDescription
 
+// Only enable swiftlint (package and plugin) if running from macOS (can't be run as plugin outside of macOS).
+#if os(macOS)
+let swiftLintDependency: [Package.Dependency] = [
+    .package(url: "https://github.com/SimplyDanny/SwiftLintPlugins", exact: "0.59.1")
+]
+let swiftLintPlugins: [Target.PluginUsage] = [
+    .plugin(name: "SwiftLintBuildToolPlugin", package: "SwiftLintPlugins")
+]
+#else
+let swiftLintDependency: [Package.Dependency] = []
+let swiftLintPlugins: [Target.PluginUsage] = []
+#endif
+
 let package = Package(
 
     // Name of the package.
@@ -22,10 +35,7 @@ let package = Package(
     ],
 
     // This package declare this dependencies (package level).
-    dependencies: [
-
-        // Public dependencies.
-        .package(url: "https://github.com/SimplyDanny/SwiftLintPlugins", exact: "0.59.1"),
+    dependencies: swiftLintDependency + [
         
         // Private dependencies.
         .package(path: "../VividKernelService"),
@@ -43,7 +53,7 @@ let package = Package(
                 "VividKernelService",
                 "VividKernelDataAccessService"
             ],
-            plugins: [.plugin(name: "SwiftLintBuildToolPlugin", package: "SwiftLintPlugins")]
+            plugins: swiftLintPlugins
         ),
         
         // Test target, with only one dependency : The main package.
@@ -51,7 +61,7 @@ let package = Package(
         .testTarget(
             name: "VividKernelDataAccessServiceInMemoryTests",
             dependencies: ["VividKernelDataAccessServiceInMemory"],
-            plugins: [.plugin(name: "SwiftLintBuildToolPlugin", package: "SwiftLintPlugins")]
+            plugins: swiftLintPlugins
         ),
     ]
 )
