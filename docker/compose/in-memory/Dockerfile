@@ -85,7 +85,7 @@ RUN    cd ./VividKernelWebserviceLib/              && swift build --configuratio
 COPY      ./VividKernel/VividKernelWebserviceExeInMemory/Package.swift ./VividKernelWebserviceExeInMemory/Package.swift
 COPY      ./VividKernel/VividKernelWebserviceExeInMemory/Sources       ./VividKernelWebserviceExeInMemory/Sources
 RUN    cd ./VividKernelWebserviceExeInMemory/              && swift package resolve
-RUN    cd ./VividKernelWebserviceExeInMemory/              && swift build --configuration release
+RUN    cd ./VividKernelWebserviceExeInMemory/              && swift build --configuration release --static-swift-stdlib
 
 # VividKernelWebserviceExeFluent
 COPY      ./VividKernel/VividKernelWebserviceExeFluent/Package.swift ./VividKernelWebserviceExeFluent/Package.swift
@@ -105,9 +105,9 @@ RUN    cd ./VividKernelServiceConnector/              && swift build --configura
 ##
 
 ##
-## "Slim" swift image to run the binary.
+## Regular ubuntu image to run the binary.
 ##
-FROM swift:6.1.0-noble-slim
+FROM ubuntu:noble
 
 ##
 ## Port exposed

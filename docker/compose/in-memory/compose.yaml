@@ -17,7 +17,7 @@ services:
       dockerfile: docker/compose/in-memory/Dockerfile
 
     # Image
-    image: vivid-kernel-webservice-in-memory
+    image: vivid-kernel-in-memory
 
     # Published port
     ports:
