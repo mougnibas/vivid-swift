@@ -38,7 +38,6 @@ let package = Package(
     dependencies: swiftLintDependency + [
         
         // Private dependencies.
-        .package(path: "../VividKernelService"),
         .package(path: "../VividKernelDataAccessService"),
     ],
 
@@ -50,7 +49,6 @@ let package = Package(
         .target(
             name: "VividKernelDataAccessServiceInMemory",
             dependencies: [
-                "VividKernelService",
                 "VividKernelDataAccessService"
             ],
             plugins: swiftLintPlugins

@@ -43,7 +43,6 @@ let package = Package(
         .package(url: "https://github.com/vapor/fluent-postgres-driver.git", exact: "2.10.1"),
         
         // Private dependencies.
-        .package(path: "../VividKernelService"),
         .package(path: "../VividKernelDataAccessService"),
     ],
 
@@ -55,7 +54,6 @@ let package = Package(
         .target(
             name: "VividKernelDataAccessServiceFluent",
             dependencies: [
-                "VividKernelService",
                 "VividKernelDataAccessService",
                 .product(name: "Vapor", package: "vapor"),
                 .product(name: "Fluent", package: "fluent"),
