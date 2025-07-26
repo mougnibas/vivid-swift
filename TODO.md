@@ -1,5 +1,14 @@
-# TODO
+# TODOs
 
-Split WebserviceLib from data access service implementations.
+## Current feature
 
-Make only one Dockerfile.
+How to coverage webservice lib ?
+
+## Next feature
+
+TODO
+
+## Nice to have
+
+TODO
+

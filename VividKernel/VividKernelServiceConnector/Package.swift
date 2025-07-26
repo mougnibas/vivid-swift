@@ -42,6 +42,8 @@ let package = Package(
 
         // Private dependencies.
         .package(path: "../VividKernelService"),
+        .package(path: "../VividKernelWebserviceLibInMemory"),
+        .package(path: "../VividKernelWebserviceLibFluent"),
     ],
 
     // We have the following targets.
@@ -63,6 +65,8 @@ let package = Package(
             name: "VividKernelServiceConnectorTests",
             dependencies: [
                 "VividKernelServiceConnector",
+                "VividKernelWebserviceLibInMemory",
+                "VividKernelWebserviceLibFluent",
                 .product(name: "Vapor", package: "vapor"),
             ],
             plugins: swiftLintPlugins

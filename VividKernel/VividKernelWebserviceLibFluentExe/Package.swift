@@ -18,19 +18,19 @@ let swiftLintPlugins: [Target.PluginUsage] = []
 let package = Package(
 
     // Name of the package.
-    name: "VividKernelWebserviceLib",
+    name: "VividKernelWebserviceLibFluentExe",
 
     // Can run only on this platform.
     // This "requirement" is for SwiftLint and Vapor.
     platforms: [
-        .macOS(.v15)
+       .macOS(.v15)
     ],
 
-    // This is a library package.
+    // This is an executable package.
     products: [
-        .library(
-            name: "VividKernelWebserviceLib",
-            targets: ["VividKernelWebserviceLib"]
+        .executable(
+            name: "VividKernelWebserviceLibFluentExe",
+            targets: ["VividKernelWebserviceLibFluentExe"]
         )
     ],
 
@@ -41,19 +41,17 @@ let package = Package(
         .package(url: "https://github.com/vapor/vapor.git", exact: "4.115.0"),
 
         // Private dependencies.
-        .package(path: "../VividKernelServiceImpl"),
-        .package(path: "../VividKernelDataAccessService"),
+        .package(path: "../VividKernelWebserviceLibFluent"),
     ],
 
     // We have the following targets.
     targets: [
 
         // Executable main target.
-        .target(
-            name: "VividKernelWebserviceLib",
+        .executableTarget(
+            name: "VividKernelWebserviceLibFluentExe",
             dependencies: [
-                "VividKernelServiceImpl",
-                "VividKernelDataAccessService",
+                "VividKernelWebserviceLibFluent",
                 .product(name: "Vapor", package: "vapor"),
             ],
             plugins: swiftLintPlugins

@@ -41,39 +41,37 @@ RUN apt-get update && apt-get install -y unzip
 ##
 
 # VividKernelService
-COPY      ./VividKernel/VividKernelService/Package.swift      ./VividKernelService/Package.swift
-COPY      ./VividKernel/VividKernelService/Sources            ./VividKernelService/Sources
-COPY      ./VividKernel/VividKernelService/Tests              ./VividKernelService/Tests
+COPY ./VividKernel/VividKernelService/Package.swift ./VividKernelService/Package.swift
+COPY ./VividKernel/VividKernelService/Sources       ./VividKernelService/Sources
+COPY ./VividKernel/VividKernelService/Tests         ./VividKernelService/Tests
 
 # VividKernelDataAccessService
-COPY      ./VividKernel/VividKernelDataAccessService/Package.swift      ./VividKernelDataAccessService/Package.swift
-COPY      ./VividKernel/VividKernelDataAccessService/Sources            ./VividKernelDataAccessService/Sources
-
-# VividKernelDataAccessServiceInMemory
-COPY      ./VividKernel/VividKernelDataAccessServiceInMemory/Package.swift ./VividKernelDataAccessServiceInMemory/Package.swift
-COPY      ./VividKernel/VividKernelDataAccessServiceInMemory/Sources       ./VividKernelDataAccessServiceInMemory/Sources
-COPY      ./VividKernel/VividKernelDataAccessServiceInMemory/Tests         ./VividKernelDataAccessServiceInMemory/Tests
+COPY ./VividKernel/VividKernelDataAccessService/Package.swift ./VividKernelDataAccessService/Package.swift
+COPY ./VividKernel/VividKernelDataAccessService/Sources       ./VividKernelDataAccessService/Sources
 
 # VividKernelDataAccessServiceFluent
-COPY      ./VividKernel/VividKernelDataAccessServiceFluent/Package.swift ./VividKernelDataAccessServiceFluent/Package.swift
-COPY      ./VividKernel/VividKernelDataAccessServiceFluent/Sources       ./VividKernelDataAccessServiceFluent/Sources
-COPY      ./VividKernel/VividKernelDataAccessServiceFluent/Tests         ./VividKernelDataAccessServiceFluent/Tests
+COPY ./VividKernel/VividKernelDataAccessServiceFluent/Package.swift ./VividKernelDataAccessServiceFluent/Package.swift
+COPY ./VividKernel/VividKernelDataAccessServiceFluent/Sources       ./VividKernelDataAccessServiceFluent/Sources
+COPY ./VividKernel/VividKernelDataAccessServiceFluent/Tests         ./VividKernelDataAccessServiceFluent/Tests
 
 # VividKernelServiceImpl
-COPY      ./VividKernel/VividKernelServiceImpl/Package.swift ./VividKernelServiceImpl/Package.swift
-COPY      ./VividKernel/VividKernelServiceImpl/Sources       ./VividKernelServiceImpl/Sources
-COPY      ./VividKernel/VividKernelServiceImpl/Tests         ./VividKernelServiceImpl/Tests
+COPY ./VividKernel/VividKernelServiceImpl/Package.swift ./VividKernelServiceImpl/Package.swift
+COPY ./VividKernel/VividKernelServiceImpl/Sources       ./VividKernelServiceImpl/Sources
+COPY ./VividKernel/VividKernelServiceImpl/Tests         ./VividKernelServiceImpl/Tests
 
 # VividKernelWebserviceLib
-COPY      ./VividKernel/VividKernelWebserviceLib/Package.swift ./VividKernelWebserviceLib/Package.swift
-COPY      ./VividKernel/VividKernelWebserviceLib/Sources       ./VividKernelWebserviceLib/Sources
-COPY      ./VividKernel/VividKernelWebserviceLib/Tests         ./VividKernelWebserviceLib/Tests
+COPY ./VividKernel/VividKernelWebserviceLib/Package.swift ./VividKernelWebserviceLib/Package.swift
+COPY ./VividKernel/VividKernelWebserviceLib/Sources       ./VividKernelWebserviceLib/Sources
 
-# VividKernelWebserviceExeFluent
-COPY      ./VividKernel/VividKernelWebserviceExeFluent/Package.swift ./VividKernelWebserviceExeFluent/Package.swift
-COPY      ./VividKernel/VividKernelWebserviceExeFluent/Sources       ./VividKernelWebserviceExeFluent/Sources
-RUN    cd ./VividKernelWebserviceExeFluent/              && swift package resolve
-RUN    cd ./VividKernelWebserviceExeFluent/              && swift build --configuration release  --static-swift-stdlib
+# VividKernelWebserviceLibFluent
+COPY ./VividKernel/VividKernelWebserviceLibFluent/Package.swift ./VividKernelWebserviceLibFluent/Package.swift
+COPY ./VividKernel/VividKernelWebserviceLibFluent/Sources       ./VividKernelWebserviceLibFluent/Sources
+
+# VividKernelWebserviceLibFluentExe
+COPY ./VividKernel/VividKernelWebserviceLibFluentExe/Package.swift ./VividKernelWebserviceLibFluentExe/Package.swift
+COPY ./VividKernel/VividKernelWebserviceLibFluentExe/Sources       ./VividKernelWebserviceLibFluentExe/Sources
+RUN  cd ./VividKernelWebserviceLibFluentExe/ && swift package resolve
+RUN  cd ./VividKernelWebserviceLibFluentExe/ && swift build --configuration release  --static-swift-stdlib
 
 ##
 ## Second stage (add binary to base image).
@@ -97,9 +95,9 @@ WORKDIR /app
 ##
 ## Copy the binary.
 ##
-COPY --from=builder /app/VividKernelWebserviceExeFluent/.build/aarch64-unknown-linux-gnu/release/VividKernelWebserviceExeFluent .
+COPY --from=builder /app/VividKernelWebserviceLibFluentExe/.build/aarch64-unknown-linux-gnu/release/VividKernelWebserviceLibFluentExe .
 
 ##
 ## Run the binary.
 ##
-CMD ["./VividKernelWebserviceExeFluent"]
+CMD ["./VividKernelWebserviceLibFluentExe"]

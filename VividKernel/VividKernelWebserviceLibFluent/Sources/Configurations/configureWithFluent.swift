@@ -13,6 +13,7 @@ import VividKernelDataAccessService
 import VividKernelDataAccessServiceFluent
 import VividKernelService
 import VividKernelServiceImpl
+import VividKernelWebserviceLib
 
 // configures your application
 public func configureWithFluent(

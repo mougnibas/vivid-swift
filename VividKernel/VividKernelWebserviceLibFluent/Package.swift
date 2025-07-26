@@ -18,19 +18,19 @@ let swiftLintPlugins: [Target.PluginUsage] = []
 let package = Package(
 
     // Name of the package.
-    name: "VividKernelWebserviceExeFluent",
+    name: "VividKernelWebserviceLibFluent",
 
     // Can run only on this platform.
     // This "requirement" is for SwiftLint and Vapor.
     platforms: [
-       .macOS(.v15)
+        .macOS(.v15)
     ],
 
-    // This is an executable package.
+    // This is a library package.
     products: [
-        .executable(
-            name: "VividKernelWebserviceExeFluent",
-            targets: ["VividKernelWebserviceExeFluent"]
+        .library(
+            name: "VividKernelWebserviceLibFluent",
+            targets: ["VividKernelWebserviceLibFluent"]
         )
     ],
 
@@ -41,20 +41,34 @@ let package = Package(
         .package(url: "https://github.com/vapor/vapor.git", exact: "4.115.0"),
 
         // Private dependencies.
+        .package(path: "../VividKernelServiceImpl"),
         .package(path: "../VividKernelWebserviceLib"),
+        .package(path: "../VividKernelDataAccessServiceFluent"),
     ],
 
     // We have the following targets.
     targets: [
 
         // Executable main target.
-        .executableTarget(
-            name: "VividKernelWebserviceExeFluent",
+        .target(
+            name: "VividKernelWebserviceLibFluent",
             dependencies: [
+                "VividKernelServiceImpl",
                 "VividKernelWebserviceLib",
+                "VividKernelDataAccessServiceFluent",
                 .product(name: "Vapor", package: "vapor"),
             ],
             plugins: swiftLintPlugins
         ),
+        
+        // Test target
+        .testTarget(
+            name: "VividKernelWebserviceLibFluentTests",
+            dependencies: [
+                "VividKernelWebserviceLibFluent",
+                .product(name: "VaporTesting", package: "vapor"),
+            ],
+            plugins: swiftLintPlugins
+        )
     ]
 )

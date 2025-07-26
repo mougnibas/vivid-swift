@@ -11,6 +11,7 @@ import VividKernelDataAccessService
 import VividKernelDataAccessServiceInMemory
 import VividKernelService
 import VividKernelServiceImpl
+import VividKernelWebserviceLib
 
 // configures your application
 public func configureWithInMemory(

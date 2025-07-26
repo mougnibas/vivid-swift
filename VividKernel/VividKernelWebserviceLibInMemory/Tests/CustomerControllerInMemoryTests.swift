@@ -11,91 +11,20 @@ import Testing
 import VividKernelService
 import VividKernelServiceImpl
 import VividKernelDataAccessService
-import VividKernelDataAccessServiceFluent
+import VividKernelDataAccessServiceInMemory
+import VividKernelWebserviceLibInMemory
 @testable import VividKernelWebserviceLib
 
-@Suite("CustomerControllerFluent test")
-final class CustomerControllerFluentTests {
+@Suite("CustomerControllerInMemory test")
+struct CustomerControllerInMemoryTests {
 
-    // Random port used by vapor for the current test method to run.
-    var vaporPort: Int
-
-    // PostgreSQL host.
-    let pgsqlHost: String = "localhost"
-
-    // Random port used by docker for postgresql container for the current test method to run.
-    var pgsqlPort: Int
-
-    // Random name used by docker for postgresql container for the current test method to run.
-    let postgresqlName: String
-
-    init() async throws {
-
-        // Random ports and name.
-        vaporPort = Int.random(in: 1024...65_535)
-        pgsqlPort = Int.random(in: 1024...65_535)
-        postgresqlName = "postgresql-test-\(pgsqlPort)"
-    }
-
-    func dockerStart() async throws {
-
-        // Start a docker container running a postgresql instance.
-        let process = Process()
-        process.executableURL = URL(fileURLWithPath: "/usr/local/bin/docker")
-        process.arguments = [
-            "run", "--rm", "--detach",
-            "--name", postgresqlName,
-            "--hostname", postgresqlName,
-            "--env", "POSTGRES_PASSWORD=mysecretpassword",
-            "--publish", "\(pgsqlPort):5432",
-            "postgres:17.5-bookworm"
-        ]
-        try process.run()
-        process.waitUntilExit()
-
-        // Wait for the PostgreSQL Docker container to become ready.
-        let maxAttempts = 15
-        let delay: UInt64 = 500_000_000 // 0.5 seconds
-        for _ in 0..<maxAttempts {
-            let checkProcess = Process()
-            checkProcess.executableURL = URL(fileURLWithPath: "/usr/local/bin/docker")
-            checkProcess.arguments = [
-                "exec", postgresqlName,
-                "pg_isready",
-                "-U", "postgres"
-            ]
-            let pipe = Pipe()
-            checkProcess.standardOutput = pipe
-            try checkProcess.run()
-            checkProcess.waitUntilExit()
-            let outputData = pipe.fileHandleForReading.readDataToEndOfFile()
-            if let output = String(data: outputData, encoding: .utf8), output.contains("accepting connections") {
-                break
-            }
-            try await Task.sleep(nanoseconds: delay)
-        }
-    }
-
-    func dockerStop() async throws {
-
-        let process = Process()
-        process.executableURL = URL(fileURLWithPath: "/usr/local/bin/docker")
-        process.arguments = [
-            "container", "stop", postgresqlName
-        ]
-        try process.run()
-        process.waitUntilExit()
-    }
+    // Vapor port.
+    let vaporPort: Int = 50_000
 
     @Test("Send POST to customer (with json) should return this new customer")
     func sendPostToCustomerWithJsonShouldReturnThisNewCustomer() async throws {
 
-        // Start docker instance.
-        try await dockerStart()
-
-        try await withApp(
-            configure: { app in
-                try await configureWithFluent(app, self.vaporPort, self.pgsqlHost, self.pgsqlPort)}, { app in
+        try await withApp(configure: { app in try await configureWithInMemory(app, vaporPort) }, { app in
 
             // Arrange.
             let kernelService: any IKernelService = app.kernelService
@@ -113,29 +42,20 @@ final class CustomerControllerFluentTests {
                 body: .init(data: json),
                 afterResponse: { response async throws in
 
-                    let actualStatus: HTTPResponseStatus = response.status
-                    let actual: Customer? = try await kernelService.getCustomer(expected.id)
+                let actualStatus: HTTPResponseStatus = response.status
+                let actual: Customer? = try await kernelService.getCustomer(expected.id)
 
-                    // Assert.
-                    #expect(actualStatus == expectedStatus)
-                    #expect(actual == expected)
-                }
-            )
+                // Assert.
+                #expect(actualStatus == expectedStatus)
+                #expect(actual == expected)
+            })
         })
-
-        // Stop docker instance.
-        try await dockerStop()
     }
 
     @Test("Send POST to customer should return one more customer")
     func sendPostToCustomerShouldReturnOneMoreCustomer() async throws {
 
-        // Start docker instance.
-        try await dockerStart()
-
-        try await withApp(
-            configure: { app in
-                try await configureWithFluent(app, self.vaporPort, self.pgsqlHost, self.pgsqlPort)}, { app in
+        try await withApp(configure: { app in try await configureWithInMemory(app, vaporPort) }, { app in
 
             // Arrange.
             let kernelService: any IKernelService = app.kernelService
@@ -156,20 +76,12 @@ final class CustomerControllerFluentTests {
                 #expect(actualNumberOfCustomersAfter == expectedNumberOfCustomersAfter)
             })
         })
-
-        // Stop docker instance.
-        try await dockerStop()
     }
 
     @Test("Send Get To Customer With 'my-id-not-found' Parameter Should Return 404")
     func sendGetToCustomerWithUnknowIdShouldReturn404() async throws {
 
-        // Start docker instance.
-        try await dockerStart()
-
-        try await withApp(
-            configure: { app in
-                try await configureWithFluent(app, self.vaporPort, self.pgsqlHost, self.pgsqlPort)}, { app in
+        try await withApp(configure: { app in try await configureWithInMemory(app, vaporPort) }, { app in
 
             // Arrange.
             let kernelService: any IKernelService = app.kernelService
@@ -186,20 +98,12 @@ final class CustomerControllerFluentTests {
                 #expect(actualStatus == expectedStatus)
             })
         })
-
-        // Stop docker instance.
-        try await dockerStop()
     }
 
     @Test("Send Get To Customer With 'my-id' Parameter Should Return That Customer")
     func sendGetToCustomerWithMyIdParameterShouldReturnThatCustomer() async throws {
 
-        // Start docker instance.
-        try await dockerStart()
-
-        try await withApp(
-            configure: { app in
-                try await configureWithFluent(app, self.vaporPort, self.pgsqlHost, self.pgsqlPort)}, { app in
+        try await withApp(configure: { app in try await configureWithInMemory(app, vaporPort) }, { app in
 
             // Arrange
             let kernelService: any IKernelService = app.kernelService
@@ -221,20 +125,12 @@ final class CustomerControllerFluentTests {
                 #expect(actualContent == expectedContent)
             })
         })
-
-        // Stop docker instance.
-        try await dockerStop()
     }
 
     @Test("Send Get To Customer With 'my-id-2' Parameter Should Return That Customer")
     func sendGetToCustomerWithMyId2ParameterShouldReturnThatCustomer() async throws {
 
-        // Start docker instance.
-        try await dockerStart()
-
-        try await withApp(
-            configure: { app in
-                try await configureWithFluent(app, self.vaporPort, self.pgsqlHost, self.pgsqlPort)}, { app in
+        try await withApp(configure: { app in try await configureWithInMemory(app, vaporPort) }, { app in
 
             // Arrange.
             let kernelService: any IKernelService = app.kernelService
@@ -256,20 +152,12 @@ final class CustomerControllerFluentTests {
                 #expect(actualContent == expectedContent)
             })
         })
-
-        // Stop docker instance.
-        try await dockerStop()
     }
 
     @Test("Send Get To Customer Without Any Parameter Should Return Those Customers")
     func sendGetToCustomerWithoutAnyParameterShouldReturnThoseCustomers() async throws {
 
-        // Start docker instance.
-        try await dockerStart()
-
-        try await withApp(
-            configure: { app in
-                try await configureWithFluent(app, self.vaporPort, self.pgsqlHost, self.pgsqlPort)}, { app in
+        try await withApp(configure: { app in try await configureWithInMemory(app, vaporPort) }, { app in
 
             // Arrange.
             let kernelService: any IKernelService = app.kernelService
@@ -295,24 +183,13 @@ final class CustomerControllerFluentTests {
                 #expect(actualContent == expectedContent)
             })
         })
-
-        // Stop docker instance.
-        try await dockerStop()
     }
 
     @Test("Create a default app then send Get To Customer Without Any Parameter Should Return Those Customers")
     func createDefaultThenSendGetToCustomerWithoutAnyParameterShouldReturnThoseCustomers() async throws {
 
-        // Override random ports.
-        self.vaporPort = 50_000
-        self.pgsqlPort = 5_432
-
-        // Start docker instance.
-        try await dockerStart()
-
-        try await withApp(
-            configure: { app in
-                try await configureWithFluent(app, nil, nil, nil)}, { app in
+        let vaporPort: Int? = nil
+        try await withApp(configure: { app in try await configureWithInMemory(app, vaporPort) }, { app in
 
             // Arrange.
             let kernelService: any IKernelService = app.kernelService
@@ -338,8 +215,5 @@ final class CustomerControllerFluentTests {
                 #expect(actualContent == expectedContent)
             })
         })
-
-        // Stop docker instance.
-        try await dockerStop()
     }
 }

@@ -7,7 +7,7 @@
 
 import Vapor
 import Logging
-import VividKernelWebserviceLib
+import VividKernelWebserviceLibInMemory
 
 @main
 enum Entrypoint {

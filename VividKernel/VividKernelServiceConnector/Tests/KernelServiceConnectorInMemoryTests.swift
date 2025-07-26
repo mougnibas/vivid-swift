@@ -12,7 +12,7 @@ import VividKernelService
 import VividKernelServiceImpl
 import VividKernelDataAccessService
 import VividKernelDataAccessServiceInMemory
-import VividKernelWebserviceLib
+import VividKernelWebserviceLibInMemory
 @testable import VividKernelServiceConnector
 
 /// Unit tests of ``KernelServiceConnector`` class.
