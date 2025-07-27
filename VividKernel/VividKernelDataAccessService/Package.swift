@@ -53,5 +53,13 @@ let package = Package(
             ],
             plugins: swiftLintPlugins
         ),
+        
+        // Test target, with only one dependency : The main package.
+        // SwiftLint is used as plugin when the project is tested.
+        .testTarget(
+            name: "VividKernelDataAccessServiceTests",
+            dependencies: ["VividKernelDataAccessService"],
+            plugins: swiftLintPlugins
+        ),
     ]
 )
