@@ -15,8 +15,8 @@ import VividKernelDataAccessServiceInMemory
 import VividKernelWebserviceLibInMemory
 @testable import VividKernelWebserviceLib
 
-@Suite("CustomerControllerInMemory test")
-struct CustomerControllerInMemoryTests {
+@Suite("CustomerController test")
+struct CustomerControllerTests {
 
     // Vapor port.
     let vaporPort: Int = 50_000

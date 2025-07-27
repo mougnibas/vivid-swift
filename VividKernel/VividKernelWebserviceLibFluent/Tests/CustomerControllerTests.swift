@@ -15,8 +15,8 @@ import VividKernelDataAccessServiceFluent
 import VividKernelWebserviceLibFluent
 @testable import VividKernelWebserviceLib
 
-@Suite("CustomerControllerFluent test")
-final class CustomerControllerFluentTests {
+@Suite("CustomerController test")
+final class CustomerControllerTests {
 
     // Random port used by vapor for the current test method to run.
     var vaporPort: Int

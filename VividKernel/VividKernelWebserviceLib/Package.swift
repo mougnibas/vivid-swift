@@ -43,6 +43,7 @@ let package = Package(
         // Private dependencies.
         .package(path: "../VividKernelServiceImpl"),
         .package(path: "../VividKernelDataAccessService"),
+        .package(path: "../VividKernelDataAccessServiceInMemory"),
     ],
 
     // We have the following targets.
@@ -55,6 +56,18 @@ let package = Package(
                 "VividKernelServiceImpl",
                 "VividKernelDataAccessService",
                 .product(name: "Vapor", package: "vapor"),
+            ],
+            plugins: swiftLintPlugins
+        ),
+        
+        // Test target, with only one dependency : The main package.
+        // SwiftLint is used as plugin when the project is tested.
+        .testTarget(
+            name: "VividKernelWebserviceLibTests",
+            dependencies: [
+                "VividKernelWebserviceLib",
+                "VividKernelDataAccessServiceInMemory",
+                .product(name: "VaporTesting", package: "vapor"),
             ],
             plugins: swiftLintPlugins
         ),
