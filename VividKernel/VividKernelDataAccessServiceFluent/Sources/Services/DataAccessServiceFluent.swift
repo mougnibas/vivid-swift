@@ -7,6 +7,7 @@
 
 import Foundation
 import Fluent
+import FluentSQL
 import VividKernelService
 import VividKernelDataAccessService
 
@@ -27,44 +28,70 @@ public actor DataAccessServiceFluent: IDataAccessService {
         // Create a CustomerModel from Customer.
         let model: CustomerModel = CustomerModel(customer.id, customer.secret)
 
-        // Save a new model to the databse.
-        _ = try await model.create(on: database)
+        // Start a transaction.
+        try await database.transaction { transaction in
+
+            // Set isolation level.
+            if let sqlDatabase = transaction as? SQLDatabase {
+                try await sqlDatabase.raw("SET TRANSACTION ISOLATION LEVEL REPEATABLE READ").run()
+            }
+
+            // Save a new model to the databse.
+            _ = try await model.create(on: transaction)
+        }
     }
 
     public func getCustomer( _ id: String) async throws -> Customer? {
 
-        // Try to find the customer.
-        let model: CustomerModel? = try await CustomerModel.find(id, on: database)
+        // Start a transaction.
+        try await database.transaction { transaction in
 
-        // If the customer is not found, return nil.
-        guard model != nil else {
-            return nil
+            // Set isolation level.
+            if let sqlDatabase = transaction as? SQLDatabase {
+                try await sqlDatabase.raw("SET TRANSACTION ISOLATION LEVEL REPEATABLE READ").run()
+            }
+
+            // Try to find the customer.
+            let model: CustomerModel? = try await CustomerModel.find(id, on: transaction)
+
+            // If the customer is not found (may be nil at this step), return nil.
+            guard let foundedModel: CustomerModel = model else {
+                return nil
+            }
+
+            // Create a customer from CustomerModel.
+            let customer: Customer = Customer(foundedModel.id!, foundedModel.secret)
+
+            // Customer if found. Return it.
+            return customer
         }
-        let foundedModel: CustomerModel = model!
-
-        // Create a customer from CustomerModel.
-        let customer: Customer = Customer(foundedModel.id!, foundedModel.secret)
-
-        // Customer if found. Return it.
-        return customer
     }
 
     public func getCustomers() async throws -> [Customer] {
 
-        // Get the customer models.
-        let models: [CustomerModel] = try await CustomerModel.query(on: database).all()
+        // Start a transaction.
+        return try await database.transaction { transaction in
 
-        // Create the customers.
-        var customers: [Customer] = []
-        for model: CustomerModel in models {
-            let customer: Customer = Customer(model.id!, model.secret)
-            customers.append(customer)
+            // Set isolation level.
+            if let sqlDatabase = transaction as? SQLDatabase {
+                try await sqlDatabase.raw("SET TRANSACTION ISOLATION LEVEL REPEATABLE READ").run()
+            }
+
+            // Get the customer models.
+            let models: [CustomerModel] = try await CustomerModel.query(on: transaction).all()
+
+            // Create the customers.
+            var customers: [Customer] = []
+            for model: CustomerModel in models {
+                let customer: Customer = Customer(model.id!, model.secret)
+                customers.append(customer)
+            }
+
+            // Sort the customers, to retrieve them always in the same order.
+            customers.sort { $0.id < $1.id }
+
+            // Return the result.
+            return customers
         }
-
-        // Sort the customers, to retrieve them always in the same order.
-        customers.sort { $0.id < $1.id }
-
-        // Return the result.
-        return customers
     }
 }
