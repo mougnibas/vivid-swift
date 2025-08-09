@@ -13,6 +13,9 @@
    <FileRef
       location = "group:TODO.md">
    </FileRef>
+   <FileRef
+      location = "group:script-xcode.sh">
+   </FileRef>
    <FileSystemSynchronizedGroup
       location = "group:docker"
       name = "docker">

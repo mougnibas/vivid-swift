@@ -9,3 +9,5 @@ Package.resolved
 # Xcode stuff
 xcuserdata/
 
+# Custom script reports
+reports/
